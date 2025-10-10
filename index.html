@@ -65,6 +65,12 @@
             cursor: pointer;
             transition: all 0.3s ease;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            width: 100%;
+        }
+        
+        .gold-button {
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            margin: 8px 0;
         }
         
         .button:hover {
@@ -92,9 +98,25 @@
             margin-bottom: 30px;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
         }
+        
+        .profile-info {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            color: white;
+        }
+        
+        .gold-count {
+            font-size: 24px;
+            font-weight: bold;
+            color: #FFD700;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
     </style>
 </head>
 <body>
+    <!-- ЭКРАН ВХОДА -->
     <div class="container" id="loginContainer">
         <h2>🔐 Вход в аккаунт</h2>
         <div class="form-group">
@@ -111,6 +133,7 @@
         </div>
     </div>
 
+    <!-- ЭКРАН РЕГИСТРАЦИИ -->
     <div class="container" id="registerContainer" style="display: none;">
         <h2>🚀 Регистрация</h2>
         <div class="form-group">
@@ -131,9 +154,28 @@
         </div>
     </div>
 
+    <!-- ГЛАВНОЕ МЕНЮ -->
+    <div class="container" id="mainMenu" style="display: none;">
+        <h2>🎮 Главное меню</h2>
+        
+        <div class="profile-info">
+            <div>Игрок: <strong id="playerName"></strong></div>
+            <div class="gold-count">🪙 <span id="goldCount">0</span> голды</div>
+        </div>
+
+        <h3 style="color: #FFD700;">💎 Магазин голды</h3>
+        <button class="button gold-button" onclick="buyGold(200)">🪙 Купить 200 голды - 100₽</button>
+        <button class="button gold-button" onclick="buyGold(500)">🪙 Купить 500 голды - 250₽</button>
+        <button class="button gold-button" onclick="buyGold(1000)">🪙 Купить 1000 голды - 500₽</button>
+        
+        <button class="button" onclick="logout()" style="margin-top: 20px; background: #666;">🚪 Выйти</button>
+    </div>
+
     <script>
+        let currentUser = null;
+        let userGold = 0;
+
         function playSound() {
-            // Простой звук клика
             const audioContext = new (window.AudioContext || window.webkitAudioContext)();
             const oscillator = audioContext.createOscillator();
             const gainNode = audioContext.createGain();
@@ -163,13 +205,23 @@
             document.getElementById('loginContainer').style.display = 'block';
         }
         
+        function showMainMenu() {
+            document.getElementById('loginContainer').style.display = 'none';
+            document.getElementById('registerContainer').style.display = 'none';
+            document.getElementById('mainMenu').style.display = 'block';
+            document.getElementById('playerName').textContent = currentUser;
+            document.getElementById('goldCount').textContent = userGold;
+        }
+        
         function login() {
             playSound();
             const username = document.getElementById('loginUsername').value;
             const password = document.getElementById('loginPassword').value;
             
             if (username && password) {
-                alert(`✅ Вход выполнен!\nНик: ${username}\nПароль: ${password}`);
+                currentUser = username;
+                userGold = 0;
+                showMainMenu();
             } else {
                 alert('⚠️ Заполните все поля!');
             }
@@ -191,7 +243,35 @@
                 return;
             }
             
-            alert(`🎉 Регистрация успешна!\nНик: ${username}\nПароль: ${password}`);
+            currentUser = username;
+            userGold = 0;
+            showMainMenu();
+        }
+        
+        function buyGold(amount) {
+            playSound();
+            const prices = {
+                200: '100₽',
+                500: '250₽', 
+                1000: '500₽'
+            };
+            
+            if (confirm(`🪙 Купить ${amount} голды за ${prices[amount]}?`)) {
+                userGold += amount;
+                document.getElementById('goldCount').textContent = userGold;
+                alert(`✅ Успешно! Вы купили ${amount} голды!\n💎 Теперь у вас: ${userGold} голды`);
+            }
+        }
+        
+        function logout() {
+            playSound();
+            currentUser = null;
+            userGold = 0;
+            document.getElementById('loginUsername').value = '';
+            document.getElementById('loginPassword').value = '';
+            document.getElementById('regUsername').value = '';
+            document.getElementById('regPassword').value = '';
+            document.getElementById('regPasswordConfirm').value = '';
             showLogin();
         }
     </script>
