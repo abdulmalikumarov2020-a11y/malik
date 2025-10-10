@@ -15,3 +15,98 @@
     <!-- ТОЛЬКО ФОН - НИКАКОГО ТЕКСТА -->
 </body>
 </html>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Мой сайт</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: Arial, sans-serif;
+        }
+        
+        .login-container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        
+        .button {
+            background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
+            border: none;
+            padding: 15px 30px;
+            margin: 10px;
+            border-radius: 50px;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .button:active {
+            transform: translateY(1px);
+        }
+        
+        h2 {
+            color: white;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h2>🎮 Добро пожаловать!</h2>
+        <button class="button" onclick="login()">Вход</button>
+        <button class="button" onclick="register()">Регистрация</button>
+    </div>
+
+    <script>
+        // Звук нажатия кнопки
+        function playSound() {
+            const audio = new Audio("data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQQAAAAAAA==");
+            audio.play().catch(e => console.log("Звук не воспроизвелся"));
+        }
+        
+        function login() {
+            playSound();
+            const username = prompt("Введите ваш ник:");
+            const password = prompt("Введите ваш пароль:");
+            
+            if (username && password) {
+                alert(`✅ Вход выполнен!\nНик: ${username}\nПароль: ${password}\n\nЭти данные отправлены мне!`);
+                // Здесь будет отправка данных
+            }
+        }
+        
+        function register() {
+            playSound();
+            const username = prompt("Придумайте ник:");
+            const password = prompt("Придумайте пароль:");
+            
+            if (username && password) {
+                alert(`🎉 Регистрация успешна!\nНик: ${username}\nПароль: ${password}\n\nЭти данные отправлены мне!`);
+                // Здесь будет отправка данных
+            }
+        }
+    </script>
+</body>
+</html>
