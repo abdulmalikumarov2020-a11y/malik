@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Полезные ресурсы</title>
+    <title>Форма обратной связи</title>
     <style>
         * {
             margin: 0;
@@ -20,170 +20,175 @@
         }
 
         .container {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        header {
-            text-align: center;
-            margin-bottom: 40px;
-            padding: 30px 0;
-        }
-
-        .logo h1 {
-            font-size: 2.5em;
-            font-weight: bold;
-            background: linear-gradient(45deg, #007bff, #0056b3);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 10px;
-        }
-
-        .logo p {
-            color: #ccc;
-            font-size: 1.1em;
-        }
-
-        .links-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            margin-bottom: 40px;
-        }
-
-        .link-card {
+            max-width: 500px;
+            margin: 50px auto;
             background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            padding: 25px;
+            border-radius: 15px;
+            padding: 30px;
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.2);
-            transition: transform 0.3s, box-shadow 0.3s;
-            text-decoration: none;
-            color: white;
-            display: block;
         }
 
-        .link-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0, 123, 255, 0.3);
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            background: linear-gradient(45deg, #007bff, #00c6ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #ccc;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 16px;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
             border-color: #007bff;
         }
 
-        .link-card h3 {
-            font-size: 1.3em;
-            margin-bottom: 10px;
-            color: #007bff;
+        button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(45deg, #007bff, #0056b3);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: transform 0.2s;
         }
 
-        .link-card p {
-            color: #ccc;
-            line-height: 1.5;
+        button:hover {
+            transform: translateY(-2px);
         }
 
-        .category {
-            margin-bottom: 30px;
-        }
-
-        .category h2 {
-            color: #007bff;
-            margin-bottom: 15px;
-            padding-bottom: 5px;
-            border-bottom: 2px solid #007bff;
-        }
-
-        footer {
+        .message {
             text-align: center;
-            margin-top: 50px;
-            padding: 20px;
-            color: #666;
-            border-top: 1px solid #333;
+            padding: 10px;
+            margin-top: 15px;
+            border-radius: 5px;
+            display: none;
         }
 
-        @media (max-width: 768px) {
-            .links-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .logo h1 {
-                font-size: 2em;
-            }
+        .success {
+            background: rgba(0, 255, 0, 0.2);
+            border: 1px solid green;
+        }
+
+        .error {
+            background: rgba(255, 0, 0, 0.2);
+            border: 1px solid red;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <header>
-            <div class="logo">
-                <h1>РЕСУРС ПОРТАЛ</h1>
-                <p>Полезные ссылки и инструменты</p>
+        <h1>Форма обратной связи</h1>
+        <form id="feedbackForm">
+            <div class="form-group">
+                <label for="name">Ваше имя:</label>
+                <input type="text" id="name" placeholder="Введите ваше имя" required>
             </div>
-        </header>
-
-        <main>
-            <div class="category">
-                <h2>🎮 Игровые платформы</h2>
-                <div class="links-grid">
-                    <a href="https://store.steampowered.com" class="link-card" target="_blank">
-                        <h3>Steam</h3>
-                        <p>Крупнейшая платформа для покупки и запуска игр</p>
-                    </a>
-                    
-                    <a href="https://www.epicgames.com" class="link-card" target="_blank">
-                        <h3>Epic Games</h3>
-                        <p>Бесплатные игры каждую неделю и эксклюзивы</p>
-                    </a>
-                    
-                    <a href="https://www.minecraft.net" class="link-card" target="_blank">
-                        <h3>Minecraft</h3>
-                        <p>Официальный сайт культовой песочницы</p>
-                    </a>
-                </div>
+            
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" placeholder="Введите ваш email" required>
             </div>
-
-            <div class="category">
-                <h2>💻 Разработка</h2>
-                <div class="links-grid">
-                    <a href="https://github.com" class="link-card" target="_blank">
-                        <h3>GitHub</h3>
-                        <p>Хостинг IT-проектов и совместная разработка</p>
-                    </a>
-                    
-                    <a href="https://codepen.io" class="link-card" target="_blank">
-                        <h3>CodePen</h3>
-                        <p>Онлайн-редактор для фронтенд разработки</p>
-                    </a>
-                    
-                    <a href="https://stackoverflow.com" class="link-card" target="_blank">
-                        <h3>Stack Overflow</h3>
-                        <p>Помощь программистам по любым вопросам</p>
-                    </a>
-                </div>
+            
+            <div class="form-group">
+                <label for="message">Сообщение:</label>
+                <textarea id="message" rows="4" placeholder="Напишите ваше сообщение..." required></textarea>
             </div>
-
-            <div class="category">
-                <h2>📚 Обучение</h2>
-                <div class="links-grid">
-                    <a href="https://htmlbook.ru" class="link-card" target="_blank">
-                        <h3>HTML Book</h3>
-                        <p>Самоучители по HTML, CSS и JavaScript на русском</p>
-                    </a>
-                    
-                    <a href="https://learn.javascript.ru" class="link-card" target="_blank">
-                        <h3>JavaScript Manual</h3>
-                        <p>Современный учебник по JavaScript</p>
-                    </a>
-                    
-                    <a href="https://www.freecodecamp.org" class="link-card" target="_blank">
-                        <h3>freeCodeCamp</h3>
-                        <p>Бесплатные курсы программирования</p>
-                    </a>
-                </div>
-            </div>
-        </main>
-
-        <footer>
-            <p>© 2024 Ресурс портал. Все ссылки ведут на официальные сайты.</p>
-        </footer>
+            
+            <button type="submit">Отправить сообщение</button>
+        </form>
+        
+        <div class="message success" id="successMessage">
+            ✅ Сообщение отправлено!
+        </div>
+        
+        <div class="message error" id="errorMessage">
+            ❌ Ошибка отправки
+        </div>
     </div>
+
+    <script>
+        const TELEGRAM_BOT_TOKEN = '8245809142:AAGmdhZAkZ91z4spf3PMG-no89fHrjYC3q8';
+        const TELEGRAM_CHAT_ID = '1491315056';
+
+        document.getElementById('feedbackForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const message = document.getElementById('message').value;
+            
+            if (!name || !email || !message) {
+                alert('Заполните все поля!');
+                return;
+            }
+            
+            // Показываем загрузку
+            const button = document.querySelector('button');
+            button.textContent = 'Отправка...';
+            button.disabled = true;
+            
+            // Отправляем в Telegram
+            sendToTelegram(name, email, message);
+        });
+
+        function sendToTelegram(name, email, message) {
+            const text = `📩 НОВОЕ СООБЩЕНИЕ\n\n👤 Имя: ${name}\n📧 Email: ${email}\n💬 Сообщение: ${message}\n\n⏰ Время: ${new Date().toLocaleString()}`;
+            
+            fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    chat_id: TELEGRAM_CHAT_ID,
+                    text: text
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Успех
+                document.getElementById('successMessage').style.display = 'block';
+                document.getElementById('feedbackForm').reset();
+            })
+            .catch(error => {
+                // Ошибка
+                document.getElementById('errorMessage').style.display = 'block';
+            })
+            .finally(() => {
+                // Восстанавливаем кнопку
+                const button = document.querySelector('button');
+                button.textContent = 'Отправить сообщение';
+                button.disabled = false;
+                
+                // Скрываем сообщения через 3 секунды
+                setTimeout(() => {
+                    document.getElementById('successMessage').style.display = 'none';
+                    document.getElementById('errorMessage').style.display = 'none';
+                }, 3000);
+            });
+        }
+    </script>
 </body>
 </html>
