@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Форма обратной связи</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #1a1a1a; color: white; padding: 20px; }
+        .container { max-width: 500px; margin: 50px auto; background: #333; padding: 30px; border-radius: 10px; }
+        h1 { text-align: center; margin-bottom: 20px; color: #007bff; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; }
+        input, textarea { width: 100%; padding: 10px; border: 1px solid #555; border-radius: 5px; background: #222; color: white; }
+        button { width: 100%; padding: 12px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        .message { text-align: center; padding: 10px; margin-top: 10px; border-radius: 5px; display: none; }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Форма обратной связи</h1>
+        <form id="feedbackForm">
+            <div class="form-group">
+                <label>Ваше имя:</label>
+                <input type="text" id="name" placeholder="Введите ваше имя" required>
+            </div>
+            <div class="form-group">
+                <label>Email:</label>
+                <input type="email" id="email" placeholder="Введите ваш email" required>
+            </div>
+            <div class="form-group">
+                <label>Сообщение:</label>
+                <textarea id="message" rows="4" placeholder="Ваше сообщение..." required></textarea>
+            </div>
+            <button type="submit">Отправить сообщение</button>
+        </form>
+        <div class="message success" id="successMessage">✅ Сообщение отправлено!</div>
+        <div class="message error" id="errorMessage">❌ Ошибка отправки</div>
+    </div>
+
+    <script>
+        const TELEGRAM_BOT_TOKEN = '8245809142:AAGmdhZAkZ91z4spf3PMG-no89fHrjYC3q8';
+        const TELEGRAM_CHAT_ID = '1491315056';
+
+        document.getElementById('feedbackForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const message = document.getElementById('message').value;
+            
+            const button = document.querySelector('button');
+            button.textContent = 'Отправка...';
+            button.disabled = true;
+            
+            const text = `📩 НОВОЕ СООБЩЕНИЕ\n👤 Имя: ${name}\n📧 Email: ${email}\n💬 Сообщение: ${message}\n⏰ Время: ${new Date().toLocaleString()}`;
+            
+            fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({chat_id: TELEGRAM_CHAT_ID, text: text})
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('successMessage').style.display = 'block';
+                document.getElementById('feedbackForm').reset();
+            })
+            .catch(error => {
+                document.getElementById('errorMessage').style.display = 'block';
+            })
+            .finally(() => {
+                button.textContent = 'Отправить сообщение';
+                button.disabled = false;
+                setTimeout(() => {
+                    document.getElementById('successMessage').style.display = 'none';
+                    document.getElementById('errorMessage').style.display = 'none';
+                }, 3000);
+            });
+        });
+    </script>
+</body>
+</html>
