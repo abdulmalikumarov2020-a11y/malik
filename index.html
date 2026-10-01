@@ -115,7 +115,7 @@ select:focus-visible,.back:focus-visible,.fm input:focus-visible,.submit:focus-v
 .bub.nx{margin-top:0;border-top-left-radius:6px}
 .bub.me.nx{border-top-left-radius:20px;border-top-right-radius:6px}
 .bub time{display:block;text-align:right;font-size:11px;opacity:.65;margin-top:1px;white-space:normal}
-.cem{align-self:center;display:grid;gap:8px;justify-items:center;margin:auto 0;text-align:center;color:var(--muted);max-width:340px}
+.cem{align-self:center;display:grid;gap:8px;justify-items:center;margin:8px 0 0;text-align:center;color:var(--muted);max-width:340px}
 .chip{background:var(--card);color:var(--text);border:2px solid var(--lilac);border-radius:99px;padding:9px 16px;font:700 14px Manrope,sans-serif;cursor:pointer}
 .chip:focus-visible{outline:3px solid var(--cobalt);outline-offset:2px}
 .send{display:flex;gap:8px;align-items:center;background:var(--card);border-radius:99px;padding:6px 6px 6px 18px;margin-top:6px;box-shadow:0 6px 22px rgba(58,75,255,.14)}
@@ -128,8 +128,8 @@ select:focus-visible,.back:focus-visible,.fm input:focus-visible,.submit:focus-v
 .sendb:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
 .cl{cursor:pointer;border:0;text-align:left;width:100%;font-family:inherit;color:var(--text);display:flex;align-items:center;gap:12px}
 .cl:focus-visible{outline:3px solid var(--cobalt);outline-offset:2px}
-.cl .avs{width:48px;height:48px}
-.cl>div{min-width:0;flex:1}
+.cl .avs{width:48px;height:48px;flex:none}
+.cl>div:not(.avs){min-width:0;flex:1}
 .cl h2{font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .bd{display:inline-block;background:#FF7A66;color:#14163B;border-radius:99px;padding:1px 9px;font-size:12px;font-weight:700;margin-left:6px}
 @media(max-width:480px){.wd{display:none}.nd{display:inline}}
@@ -374,8 +374,8 @@ c.sig=sig;
 var L=$('ch-l'),near=L.scrollHeight-L.scrollTop-L.clientHeight<80||!L.childNodes.length;
 L.textContent='';
 L.appendChild(el('div','note','Не переводите деньги вперёд незнакомым людям. Проверяйте товар лично.'));
-if(!a.length){var e=el('div','cem');e.appendChild(el('p','','Напишите первое сообщение или выберите быстрый вопрос:'));
-['Здравствуйте! Ещё продаётся?','Какая последняя цена?','Можно посмотреть сегодня?'].forEach(function(t){var q=el('button','chip',t);q.onclick=function(){$('ch-i').value=t;sendMsg()};e.appendChild(q)});L.appendChild(e)}
+if(!a.length){var e=el('div','cem');e.appendChild(el('p','','Начните разговор одним нажатием:'));
+['Здравствуйте!','Ещё продаётся?','Могу купить сейчас?'].forEach(function(t){var q=el('button','chip',t);q.onclick=function(){$('ch-i').value=t;sendMsg()};e.appendChild(q)});L.appendChild(e)}
 var pd='',ps=null;
 a.forEach(function(m){var d=new Date(m.created_at),dk=d.toDateString();
 if(dk!==pd){L.appendChild(el('div','day',dayLbl(d)));pd=dk;ps=null}
