@@ -555,5 +555,218 @@ if(le){go('auth');$('a-err').textContent='Не удалось загрузить
 if(location.hash||location.search)history.replaceState(null,'',location.pathname)
 })();
 </script>
+<script>
+if(typeof $!=='function'||!window.supabase)throw new Error('ingSell: основной скрипт не загрузился');
+/* ===== ingSell update: пагинация, адреса, правка, «продано», жалобы, блокировки, уведомления ===== */
+var H0=location.hash,LINK=/^#(cat|ad|edit|chat|chats|profile|form)(\/|\?|$)/,pend='',booted=0,curHash=null,curV='',prevV='',editAd=null,PG=20,off=0,seen={},inb=null,unread=0;
+var COLS='id,category,title,price,city,phone,photos,owner,details,created_at,description,sold,profiles(nick,public_id)';
+var CCOLS='id,buyer,seller,ads(title,price,photos),b:profiles!conversations_buyer_fkey(nick,public_id),s:profiles!conversations_seller_fkey(nick,public_id)';
+var RS=[['spam','Спам или реклама'],['fraud','Мошенничество'],['prohibited','Запрещённый товар'],['abuse','Оскорбления'],['other','Другое']];
+try{pend=LINK.test(H0)?H0:(sessionStorage.getItem('pend')||'')}catch(e){pend=LINK.test(H0)?H0:''}
+function ph2path(u){return decodeURIComponent(u.split('/photos/')[1]||'')}
+function hashFor(v){
+if(v==='home')return '';
+if(v==='cat'){var p=[];if(S.mine)p.push('mine=1');if(S.cat)p.push('k='+S.cat);if(S.q)p.push('q='+encodeURIComponent(S.q));if(S.city)p.push('c='+encodeURIComponent(S.city));if(S.sub)p.push('t='+encodeURIComponent(S.sub));if(S.min)p.push('min='+S.min);if(S.max)p.push('max='+S.max);if(S.so&&S.so!=='new')p.push('so='+S.so);return '#cat'+(p.length?'?'+p.join('&'):'')}
+if(v==='adv')return curAd?'#ad/'+curAd.id:'';
+if(v==='chat')return cur?'#chat/'+cur.id:'#chats';
+if(v==='form')return editAd?'#edit/'+editAd.id:'#form';
+return '#'+v}
+function repl(){var h=hashFor('cat');history.replaceState(null,'',location.pathname+h);curHash=h}
+function clearForm(k){editAd=null;pics=[];drawPv();['f-t','f-p','f-d','f-ph'].forEach(function(i){$(i).value=''});$('f-c').value='';$('f-f').value='';$('f-k').value=k||'';buildX(k||'');$('err').textContent=''}
+function go(v,np,ed){
+if(!me)v='auth';
+if(me&&v==='home'&&pend){var hh=pend;pend='';booted=1;try{sessionStorage.removeItem('pend')}catch(e){}setTimeout(function(){routeTo(hh,2)},0);return}
+booted=1;
+['home','cat','adv','form','auth','profile','chats','chat'].forEach(function(n){$(n).hidden=n!==v});
+if(v!=='chat')stopChat();
+document.querySelector('.hr').hidden=v==='auth';
+if(v==='form'&&!ed&&editAd)clearForm();
+prevV=curV;curV=v;
+var h=hashFor(v);
+if(np!==1){var u=location.pathname+h;if(u!==location.pathname+location.hash)history[np===2?'replaceState':'pushState'](null,'',u);curHash=h}
+if(v==='chats'){loadChats();if(!np)askNotif(1)}
+if(v==='cat')render();
+if(v==='adv')drawAd();
+if(v==='home'||v==='cat')lastV=v;
+if(v==='form'){if(!$('f-k').value&&S.cat&&!editAd){$('f-k').value=S.cat;buildX(S.cat)}
+document.querySelector('#form .vt').textContent=editAd?'Изменить объявление':'Новое объявление';$('pub').textContent=editAd?'Сохранить':'Опубликовать';
+if(me&&!$('f-ph').value)$('f-ph').value=me.phone||''}
+if(v==='profile')drawProfile();
+window.scrollTo(0,0);refreshDot();if(me)startInbox()}
+async function fetchAd(id){if(!/^\d+$/.test(id))return null;var r=await sb.from('ads').select(COLS).eq('id',id).maybeSingle();return r.data||null}
+async function fetchConv(id){if(!/^\d+$/.test(id))return null;var r=await sb.from('conversations').select(CCOLS).eq('id',id).maybeSingle();return r.data||null}
+function openConv(c,np){var mine=c.buyer===me.id,w=mine?c.s:c.b;openChat(c.id,c.ads?c.ads.title:'Объявление',{nick:w?w.nick:'Пользователь',pid:w?w.public_id:0},c.ads?{price:c.ads.price,photo:c.ads.photos&&c.ads.photos[0]}:null,np)}
+async function routeTo(h,np){
+var m=h.replace(/^#\/?/,''),qi=m.indexOf('?'),p=qi<0?m:m.slice(0,qi),qs=qi<0?'':m.slice(qi+1),a=p.split('/'),k=a[0],id=a[1];
+if(!me){go('auth',1);return}
+if(k==='cat'){var o={};qs.split('&').forEach(function(x){var i=x.indexOf('=');if(i>0)try{o[x.slice(0,i)]=decodeURIComponent(x.slice(i+1))}catch(e){}});
+S={cat:CATS[o.k]?o.k:'',q:o.q||'',city:CITIES.indexOf(o.c)>=0?o.c:'',sub:'',min:(o.min||'').replace(/\D/g,'').slice(0,12),max:(o.max||'').replace(/\D/g,'').slice(0,12),so:/^(asc|desc)$/.test(o.so)?o.so:'new',mine:o.mine==='1'};
+$('fk').value=S.cat;$('sq').value=S.q;$('fc').value=S.city;$('pmin').value=S.min;$('pmax').value=S.max;$('so').value=S.so;
+S.sub=o.t||'';subOpts();S.sub=$('fs').hidden?'':$('fs').value;go('cat',np);return}
+if(k==='ad'||k==='edit'){var x=(curAd&&String(curAd.id)===id)?curAd:await fetchAd(id);
+if(!x){show('Объявление не найдено');go('home',2);return}
+if(k==='edit'){if(x.owner!==me.id){go('home',2);return}openEdit(x,np);return}
+curAd=x;go('adv',np);return}
+if(k==='chat'){var c=await fetchConv(id);if(!c){go('chats',2);return}openConv(c,np);return}
+if(k==='form'||k==='profile'||k==='chats'){go(k,np);return}
+go('home',np)}
+function onNav(){if(!booted||!me)return;var h=location.hash;if(h===curHash)return;curHash=h;routeTo(h,1)}
+window.addEventListener('popstate',onNav);window.addEventListener('hashchange',onNav);
+function openCat(k,q,np,mine){S={cat:k||'',q:q||'',city:'',sub:'',min:'',max:'',so:'new',mine:!!mine};
+$('fk').value=S.cat;$('sq').value=S.q;$('fc').value='';$('pmin').value='';$('pmax').value='';$('so').value='new';subOpts();go('cat',np)}
+function openAd(x){curAd=x;listY=window.scrollY||0;go('adv')}
+$('adv-back').onclick=function(){restoreY=listY;if(prevV==='cat'&&history.length>1)history.back();else go('cat')};
+$('f-back').onclick=function(){if(prevV&&history.length>1)history.back();else go(lastV)};
+
+/* список: по 20 + «Показать ещё», в карточке одно фото */
+function card(x){
+var k=el('article','ad lc'),own=me&&x.owner===me.id;
+if(x.sold)k.style.opacity='.7';
+if(x.photos&&x.photos.length){var s3=el('div','ph'),im=el('img');im.src=x.photos[0];im.alt=x.title;im.loading='lazy';s3.appendChild(im);k.appendChild(s3)}
+var h=el('h2','',x.title);if(x.sold)h.appendChild(el('span','bd','Продано'));k.appendChild(h);
+k.appendChild(el('div','pr',Number(x.price).toLocaleString('ru-RU')+' ₽'));
+var dd=dtext(x);if(dd)k.appendChild(el('div','ct',dd));
+if(x.description)k.appendChild(el('div','ds',x.description));
+k.appendChild(el('div','ct',x.city+' · '+x.phone));
+if(x.profiles)k.appendChild(el('div','ct','Продавец: '+x.profiles.nick+' · ID '+x.profiles.public_id));
+var r2=el('div','row'),a1=el('a','call','Позвонить');a1.href='tel:+7'+x.phone.replace(/\D/g,'').slice(-10);r2.appendChild(a1);
+if(me&&!own&&!x.sold){var wb=el('button','call','Написать');wb.style.cssText='border:0;cursor:pointer;background:var(--cobalt);color:#fff;font-family:inherit';wb.onclick=function(){startChat(x)};r2.appendChild(wb)}
+if(own){var eb=el('button','more','Изменить');eb.onclick=function(){openEdit(x)};r2.appendChild(eb);
+var sd=el('button','more',x.sold?'Вернуть':'Продано');sd.onclick=function(){setSold(x,sd,function(){render()})};r2.appendChild(sd);
+var dl=el('button','del','Удалить');dl.onclick=function(){delAd(x,dl,render)};r2.appendChild(dl)}
+var mb=el('button','more','Подробнее');mb.onclick=function(){openAd(x)};r2.appendChild(mb);
+k.onclick=function(e){if(!e.target.closest('a,button'))openAd(x)};k.appendChild(r2);return k}
+async function render(app){
+app=app===true;var id=++rq,L=$('list'),C=CATS[S.cat],mw=$('more-w');
+if(app){if(mw){mw.firstChild.disabled=true;mw.firstChild.textContent='Загрузка…'}}
+else{off=0;seen={};if(!$('cat').hidden)repl();$('cat-t').textContent=S.mine?'Мои объявления':C?C.n:(S.q?'Поиск':'Все объявления');L.textContent='';L.appendChild(el('p','ct','Загрузка…'));$('cnt').textContent=''}
+var q=sb.from('ads').select(COLS,{count:'exact'});
+if(S.mine)q=q.eq('owner',me.id);else q=q.eq('sold',false);
+if(S.cat)q=q.eq('category',S.cat);
+if(S.city)q=q.eq('city',S.city);
+if(C&&S.sub&&C.f[0]&&!C.f[0].num)q=q.eq('details->>'+C.f[0].k,S.sub);
+S.q.split(/\s+/).filter(Boolean).slice(0,5).forEach(function(w){q=q.ilike('title','%'+w.replace(/[\\%_]/g,'\\$&')+'%')});
+if(S.min)q=q.gte('price',Number(S.min));
+if(S.max)q=q.lte('price',Number(S.max));
+if(S.so==='new')q=q.order('created_at',{ascending:false});
+else q=q.order('price',{ascending:S.so==='asc'}).order('created_at',{ascending:false});
+var res=await q.order('id',{ascending:false}).range(off,off+PG-1);
+if(id!==rq)return;
+if(res.error){
+if(app){show('Не удалось загрузить');if(mw){mw.firstChild.disabled=false;mw.firstChild.textContent='Показать ещё'}return}
+L.textContent='';var e=el('div','empty');e.appendChild(el('h2','','Не удалось загрузить'));e.appendChild(el('p','','Проверьте интернет и попробуйте ещё раз.'));restoreY=null;var rb=el('button','post','Повторить');rb.onclick=function(){render()};e.appendChild(rb);L.appendChild(e);return}
+if(!app)L.textContent='';else if(mw)mw.remove();
+var rows=res.data;off+=rows.length;
+$('cnt').textContent='Найдено: '+(res.count===null?off:res.count);setTimeout(rs,0);
+if(!rows.length&&!app){var d=el('div','empty');d.appendChild(el('h2','','Ничего не найдено'));
+var filt=S.q||S.city||S.sub||S.min||S.max;
+d.appendChild(el('p','',filt?'Попробуйте изменить запрос или фильтры.':(S.mine?'У вас пока нет объявлений.':'Здесь пока пусто. Станьте первым!')));
+var b=el('button','post','Подать объявление');b.onclick=function(){go('form')};d.appendChild(b);L.appendChild(d);return}
+rows.forEach(function(x){if(seen[x.id])return;seen[x.id]=1;L.appendChild(card(x))});
+if(rows.length===PG&&(res.count===null||off<res.count)){var w=el('div','row'),mbn=el('button','more','Показать ещё');w.id='more-w';mbn.onclick=function(){render(true)};w.appendChild(mbn);L.appendChild(w)}}
+
+/* продано, правка */
+async function setSold(x,btn,after){btn.disabled=true;var r=await sb.from('ads').update({sold:!x.sold}).eq('id',x.id);
+if(r.error){btn.disabled=false;show('Не удалось изменить');return}x.sold=!x.sold;show(x.sold?'Отмечено как проданное':'Объявление снова в продаже');after()}
+var _da=drawAd;drawAd=function(){_da();var x=curAd,B=$('adv-c'),ac=B.querySelector('.acts');
+if(x.sold){var t=el('div','tg','Продано');t.style.cssText='background:var(--coral);color:#14163B;display:inline-block;margin-bottom:8px';B.insertBefore(t,B.querySelector('.vt'));var w0=ac.querySelector('.wr');if(w0)w0.remove()}
+if(me&&x.owner===me.id){var eb=el('button','call wr','Изменить');eb.onclick=function(){openEdit(x)};ac.insertBefore(eb,ac.firstChild);
+var sb2=el('button','del',x.sold?'Вернуть в продажу':'Продано');sb2.onclick=function(){setSold(x,sb2,function(){drawAd()})};ac.insertBefore(sb2,ac.querySelector('.del'))}
+else if(me){var rp=el('button','del','Пожаловаться');rp.onclick=function(){report({ad_id:x.id})};ac.appendChild(rp)}};
+function openEdit(x,np){editAd=x;go('form',np,true);
+$('f-k').value=x.category;buildX(x.category);var C=CATS[x.category]||CATS.other,d=x.details||{};
+C.f.forEach(function(f){var e=$('fx-'+f.k);if(e&&d[f.k]!==undefined&&d[f.k]!==null)e.value=d[f.k]});
+$('f-t').value=x.title;$('f-p').value=x.price;$('f-d').value=x.description||'';$('f-c').value=x.city;$('f-ph').value=x.phone;$('err').textContent='';
+pics=(x.photos||[]).map(function(u){return {old:1,url:u}});drawPv()}
+$('pub').onclick=async function(){
+if(busy)return;
+var k=$('f-k').value,de=$('f-d').value.trim().slice(0,1000),C=CATS[k],d={},ti=$('f-t').value.trim(),p=$('f-p').value.replace(/\s/g,''),c=$('f-c').value,ph=$('f-ph').value.trim(),n=ph.replace(/\D/g,''),m='';
+if(!C)m='Выберите категорию';
+else C.f.forEach(function(f){if(m)return;var v=$('fx-'+f.k).value.trim();
+if(f.num){if(!v)return;if(!/^\d{1,6}$/.test(v)||+v<f.min||+v>f.max){m=f.l+': от '+f.min+' до '+f.max;return}d[f.k]=Number(v)}
+else{if(!v){m='Выберите: '+f.l.toLowerCase();return}d[f.k]=v}});
+if(m){}
+else if(!ti)m='Введите название';
+else if(!/^\d{1,9}$/.test(p)||+p<1)m='Укажите цену цифрами, например 350000';
+else if(!c)m='Выберите город или село';
+else if(n.length<10||n.length>11)m='Введите номер телефона, например +7 928 000-00-00';
+$('err').textContent=m;if(m)return;
+busy=1;var bt=this,up=[],ed=editAd;bt.disabled=true;bt.textContent='Сохраняем…';
+try{
+var urls=[];
+for(var i=0;i<pics.length;i++){var p0=pics[i];if(p0.old){urls.push(p0.url);continue}
+var path=me.id+'/'+Date.now()+'-'+i+'.jpg',u=await sb.storage.from('photos').upload(path,p0.blob,{contentType:'image/jpeg'});if(u.error)throw u.error;up.push(path);urls.push(sb.storage.from('photos').getPublicUrl(path).data.publicUrl)}
+var row={title:ti,price:Number(p),city:c,phone:ph,photos:urls,category:k,details:d,description:de};
+if(ed){var ur=await sb.from('ads').update(row).eq('id',ed.id).select(COLS).single();if(ur.error)throw ur.error;
+var gone=(ed.photos||[]).filter(function(u){return urls.indexOf(u)<0}).map(ph2path).filter(Boolean);if(gone.length)sb.storage.from('photos').remove(gone);
+curAd=ur.data;clearForm();show('Изменения сохранены');go('adv')}
+else{var ins=await sb.from('ads').insert(row);if(ins.error)throw ins.error;
+clearForm(k);show('Объявление опубликовано');openCat(k)}
+}catch(e){if(up.length)sb.storage.from('photos').remove(up);$('err').textContent='Не удалось сохранить: '+(e.message||'ошибка сети')}
+busy=0;bt.disabled=false;bt.textContent=editAd?'Сохранить':'Опубликовать'};
+
+/* жалобы и блокировки */
+function pick(t,o){return new Promise(function(res){var w=el('div'),b=el('div');
+w.style.cssText='position:fixed;inset:0;z-index:30;background:rgba(10,11,30,.6);display:grid;align-items:end';
+b.style.cssText='background:var(--card);border-radius:24px 24px 0 0;padding:16px 16px calc(16px + env(safe-area-inset-bottom,0px));display:grid;gap:8px;max-width:520px;width:100%;margin:0 auto';
+b.appendChild(el('div','lbl',t));function done(i){w.remove();res(i)}
+o.forEach(function(x,i){var c=el('button','chip',x);c.onclick=function(){done(i)};b.appendChild(c)});
+var z=el('button','del','Отмена');z.onclick=function(){done(-1)};b.appendChild(z);w.onclick=function(e){if(e.target===w)done(-1)};w.appendChild(b);document.body.appendChild(w)})}
+async function report(row){var i=await pick('Причина жалобы',RS.map(function(r){return r[1]}));if(i<0)return;
+var r=await sb.from('reports').insert(Object.assign({reason:RS[i][0]},row));
+if(r.error)show(r.error.code==='23505'?'Вы уже отправляли жалобу':(r.error.message||'Не удалось отправить'));else show('Жалоба отправлена, спасибо')}
+async function chatMenu(){var c=cur;if(!c||!c.peer)return;
+var i=await pick('Действия',['Пожаловаться на пользователя','Заблокировать пользователя']);if(i<0)return;
+if(i===0){report({target:c.peer});return}
+var r=await sb.from('blocks').insert({blocked:c.peer});
+if(r.error&&r.error.code!=='23505'){show('Не удалось заблокировать');return}
+show('Пользователь заблокирован. Разблокировать можно в профиле');go('chats')}
+function openChat(id,title,who,ad,np){
+stopChat();cur={id:id,sig:'',n:-1,peer:null};go('chat',np);
+$('ch-w').textContent=who.nick;$('ch-t').textContent=title;
+var av=$('ch-av');av.textContent=who.nick.charAt(0).toUpperCase();av.style.background=hu(who.pid||0);
+var A=$('ch-ad');A.textContent='';A.hidden=!ad;
+if(ad){if(ad.photo){var im=el('img');im.src=ad.photo;im.alt='';A.appendChild(im)}else A.appendChild(el('div','ph0'));
+var d=el('div');d.appendChild(el('b','',title));d.appendChild(el('div','pr',Number(ad.price).toLocaleString('ru-RU')+' ₽'));A.appendChild(d)}
+if(!$('ch-m')){var mb=el('button','back','⋯');mb.id='ch-m';mb.setAttribute('aria-label','Действия');mb.style.marginLeft='auto';mb.onclick=chatMenu;document.querySelector('#chat .chh').appendChild(mb)}
+$('ch-l').textContent='';$('ch-i').value='';$('ch-s').disabled=true;
+sb.from('conversations').select('buyer,seller').eq('id',id).maybeSingle().then(function(r){if(r.data&&cur&&cur.id===id)cur.peer=r.data.buyer===me.id?r.data.seller:r.data.buyer});
+loadThread();
+cp=setInterval(loadThread,6000);
+try{chn=sb.channel('conv'+id).on('postgres_changes',{event:'INSERT',schema:'public',table:'messages',filter:'conversation_id=eq.'+id},function(){loadThread()}).subscribe()}catch(e){}}
+var _sc=startChat;startChat=async function(x){askNotif(1);
+if(me){var b=await sb.from('blocks').select('blocked').eq('blocked',x.owner).maybeSingle();if(b.data){show('Вы заблокировали этого продавца. Разблокируйте его в профиле');return}}
+return _sc(x)};
+var _dp=drawProfile;drawProfile=function(){_dp();var F=document.querySelector('#profile .fm'),B=$('bl');
+if(!B){B=el('div');B.id='bl';B.style.cssText='display:grid;gap:10px';
+var b1=el('button','del','Мои объявления');b1.onclick=function(){openCat('','',0,true)};F.insertBefore(b1,$('psave'));
+if(window.Notification){var nb=el('button','del','Включить уведомления');nb.id='nt';nb.onclick=function(){askNotif(0)};F.insertBefore(nb,$('psave'));upN()}
+F.insertBefore(B,F.querySelector('.lbl'))}
+sb.from('blocks').select('blocked,p:profiles!blocks_blocked_fkey(nick,public_id)').then(function(r){B.textContent='';if(r.error||!r.data||!r.data.length)return;
+B.appendChild(el('div','lbl','Заблокированные'));
+r.data.forEach(function(x){var row=el('div','sel'),nm=el('div','chn',x.p?x.p.nick:'Пользователь'),u=el('button','del','Разблокировать');nm.style.flex='1';
+u.onclick=async function(){u.disabled=true;var dr=await sb.from('blocks').delete().eq('blocked',x.blocked);if(dr.error){u.disabled=false;show('Не удалось разблокировать');return}row.remove();show('Пользователь разблокирован')};
+row.appendChild(nm);row.appendChild(u);B.appendChild(row)})})};
+
+/* уведомления о новых сообщениях */
+function upN(){var b=$('nt');if(b&&window.Notification)b.textContent=Notification.permission==='granted'?'Уведомления включены':'Включить уведомления'}
+function askNotif(q){if(!window.Notification)return;
+if(Notification.permission==='default'){try{var pr=Notification.requestPermission();if(pr&&pr.then)pr.then(upN)}catch(e){}}
+else if(!q)show(Notification.permission==='granted'?'Уведомления уже включены':'Уведомления запрещены в настройках браузера');
+upN()}
+function startInbox(){if(inb||!me)return;
+try{inb=sb.channel('inbox-'+me.id).on('postgres_changes',{event:'INSERT',schema:'public',table:'messages'},function(p){
+var m=p.new;if(!m||!me||m.sender===me.id)return;refreshDot();
+var here=cur&&cur.id===m.conversation_id;if(here)loadThread();
+if(document.hidden){if(window.Notification&&Notification.permission==='granted'){try{var nf=new Notification('ingSell: новое сообщение',{body:String(m.body).slice(0,120),tag:'c'+m.conversation_id});
+nf.onclick=function(){window.focus();fetchConv(String(m.conversation_id)).then(function(c){if(c)openConv(c)});nf.close()}}catch(e){}}}
+else if(!here)show('Новое сообщение: '+String(m.body).slice(0,60))}).subscribe()}catch(e){inb=null}}
+function stopInbox(){if(inb){try{sb.removeChannel(inb)}catch(e){}inb=null}unread=0;document.title='ingSell — покупай и продавай'}
+async function refreshDot(){if(!me)return;
+try{var r=await sb.from('messages').select('id',{count:'exact',head:true}).is('read_at',null).neq('sender',me.id);var n=r.count||0;$('dot').hidden=!n;
+if(n!==unread){unread=n;document.title=(n?'('+n+') ':'')+'ingSell — покупай и продавай'}}catch(e){}}
+var _out=$('out').onclick;$('out').onclick=function(){stopInbox();curHash=null;return _out.apply(this,arguments)};
+var _ya=$('ya').onclick;$('ya').onclick=function(){try{if(pend)sessionStorage.setItem('pend',pend)}catch(e){}return _ya.apply(this,arguments)};
+</script>
 </body>
 </html>
