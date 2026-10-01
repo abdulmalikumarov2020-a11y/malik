@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ingSell — покупай и продавай</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700&family=Unbounded:wght@600;800&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#14163B;--cobalt:#3A4BFF;--sun:#FFC933;--mint:#2DD4A0;--coral:#FF7A66;--lilac:#D9D6FF;--sky:#BFE3FF;
+--bg:#F2F4FF;--card:#fff;--text:#14163B;--muted:#5B5F85;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0D0F2B;--card:#1B1E4A;--text:#F2F4FF;--muted:#A5A9D6}}
+:root[data-theme="dark"]{--bg:#0D0F2B;--card:#1B1E4A;--text:#F2F4FF;--muted:#A5A9D6}
+*{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent}
+button,.tile,.logo{-webkit-user-select:none;user-select:none;touch-action:manipulation}
+body{background:var(--bg);color:var(--text);font-family:Manrope,system-ui,sans-serif;font-weight:500;line-height:1.5}
+.wrap{max-width:1040px;margin:0 auto;padding:0 16px}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 0}
+.logo{display:flex;align-items:center;gap:8px;font-family:Unbounded,sans-serif;font-weight:800;font-size:22px;text-decoration:none;color:var(--text)}
+.logo svg{width:38px;height:38px}
+.logo b{color:var(--cobalt);font-weight:800}
+.post{background:var(--sun);color:#14163B;border:0;border-radius:99px;padding:11px 18px;font:700 14px Manrope,sans-serif;cursor:pointer}
+.post:focus-visible,.tile:focus-visible,input:focus-visible{outline:3px solid var(--cobalt);outline-offset:2px}
+.hero{padding:20px 0 24px}
+h1{font-family:Unbounded,sans-serif;font-weight:800;font-size:clamp(28px,6.5vw,52px);line-height:1.1;max-width:14ch}
+.hero p{color:var(--muted);margin:12px 0 20px;max-width:46ch}
+.search{display:flex;gap:8px;background:var(--card);border-radius:20px;padding:8px;max-width:560px;box-shadow:0 8px 28px rgba(58,75,255,.15)}
+.search input{flex:1;min-width:0;border:0;background:none;color:var(--text);font:500 16px Manrope,sans-serif;padding:8px 10px}
+.search button{border:0;background:var(--cobalt);color:#fff;border-radius:14px;padding:0 18px;font:700 15px Manrope,sans-serif;cursor:pointer}
+.board{display:grid;grid-template-columns:repeat(2,1fr);grid-auto-rows:132px;gap:12px;margin:8px 0 40px}
+@media(min-width:720px){.board{grid-template-columns:repeat(4,1fr);grid-auto-rows:150px;gap:14px}}
+.tile{position:relative;overflow:hidden;border:0;text-align:left;border-radius:26px;padding:16px;cursor:pointer;color:#14163B;background:var(--c);display:flex;flex-direction:column;justify-content:space-between;font-family:inherit;transition:transform .18s}
+.tile:hover{transform:translateY(-3px)}
+.tile svg{width:38px;height:38px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.tile h2{font-family:Unbounded,sans-serif;font-weight:600;font-size:16px;line-height:1.2}
+.tile span{display:block;font-size:12.5px;opacity:.75;margin-top:2px}
+.big{grid-column:span 2;grid-row:span 2;color:#fff}
+.big svg{width:120px;height:120px;stroke-width:1.2;position:absolute;right:-8px;top:10px;opacity:.28}
+.big h2{font-size:clamp(24px,5vw,34px)}
+.big span{font-size:14px;max-width:24ch}
+.wide{grid-column:span 2}
+.light{color:#fff}
+#toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translate(-50%,120px);background:var(--ink);color:#fff;padding:12px 18px;border-radius:14px;font-size:14px;transition:transform .25s;max-width:90vw;z-index:9}
+#toast.on{transform:translate(-50%,0)}
+.view{padding:8px 0 40px}.view[hidden],#home[hidden]{display:none}
+.back{background:none;border:0;color:var(--cobalt);font:700 15px Manrope,sans-serif;cursor:pointer;padding:8px 0}
+.vt{font-family:Unbounded,sans-serif;font-weight:800;font-size:clamp(26px,6vw,40px);margin:8px 0 16px;max-width:none}
+.bar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:16px}
+select,.fm input{width:100%;background:var(--card);color:var(--text);border:2px solid transparent;border-radius:14px;padding:12px 14px;font:500 16px Manrope,sans-serif}
+.bar select{flex:1;min-width:180px;width:auto}
+select:focus-visible,.back:focus-visible,.fm input:focus-visible,.submit:focus-visible,.call:focus-visible,.del:focus-visible{outline:3px solid var(--cobalt);outline-offset:2px}
+.ad{background:var(--card);border-radius:22px;padding:16px;margin-bottom:12px;display:grid;gap:4px}
+.ad h2{font-family:Unbounded,sans-serif;font-weight:600;font-size:17px;line-height:1.25}
+.pr{font-weight:700;font-size:20px;color:var(--cobalt)}
+.ct{color:var(--muted);font-size:14px}
+.row{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap}
+.call{background:var(--mint);color:#14163B;text-decoration:none;border-radius:99px;padding:10px 16px;font-weight:700;font-size:14px}
+.del{background:none;border:2px solid var(--muted);color:var(--muted);border-radius:99px;padding:8px 14px;font:700 14px Manrope,sans-serif;cursor:pointer}
+.empty{background:var(--card);border-radius:26px;padding:28px 20px;text-align:center}
+.empty h2{font-family:Unbounded,sans-serif;font-weight:600;font-size:18px}
+.empty p{color:var(--muted);margin:8px auto 16px;max-width:34ch}
+.fm{display:grid;gap:14px;max-width:520px}
+.fm label{display:grid;gap:6px;font-weight:700;font-size:14px}
+.hint{color:var(--muted);font-size:13px}
+.err{color:#D92D20;min-height:20px;font-weight:700;font-size:14px}
+.submit{background:var(--cobalt);color:#fff;border:0;border-radius:16px;padding:14px;font:700 16px Manrope,sans-serif;cursor:pointer}
+.ph{display:flex;gap:8px;overflow-x:auto;margin-bottom:6px;padding-bottom:4px}
+.ph img{height:160px;width:auto;max-width:85%;border-radius:16px;object-fit:cover;flex:none}
+.lbl{font-weight:700;font-size:14px}
+.pv{display:flex;gap:10px;flex-wrap:wrap}
+.pv div{position:relative}
+.pv img{width:84px;height:84px;object-fit:cover;border-radius:14px;display:block}
+.pv button{position:absolute;top:-6px;right:-6px;width:28px;height:28px;border-radius:50%;border:0;background:var(--ink);color:#fff;font-size:18px;line-height:1;cursor:pointer}
+.fm input[type=file]{border:2px dashed var(--cobalt);cursor:pointer}
+.fm input[type=file]::file-selector-button{background:var(--cobalt);color:#fff;border:0;border-radius:10px;padding:8px 12px;margin-right:10px;font:700 14px Manrope,sans-serif;cursor:pointer}
+.pv button:focus-visible{outline:3px solid var(--cobalt);outline-offset:2px}
+.hr{display:flex;align-items:center;gap:8px}.hr[hidden],.fm [hidden]{display:none}
+.av,.avl{border:0;border-radius:50%;color:#fff;font:800 16px Unbounded,sans-serif;display:grid;place-items:center;background:var(--cobalt)}
+.av{width:42px;height:42px;cursor:pointer}
+.avl{width:72px;height:72px;font-size:30px;flex:none}
+.pf{display:flex;gap:14px;align-items:center;margin:8px 0 18px}
+.pf .vt{margin:0 0 4px;font-size:clamp(22px,5vw,32px);word-break:break-word}
+.tabs{display:flex;gap:8px;margin-bottom:16px;max-width:520px}
+.tab{flex:1;border:0;border-radius:14px;padding:12px;background:var(--card);color:var(--text);font:700 15px Manrope,sans-serif;cursor:pointer}
+.tab[aria-selected=true]{background:var(--cobalt);color:#fff}
+.av:focus-visible,.tab:focus-visible{outline:3px solid var(--cobalt);outline-offset:2px}
+.nd{display:none}
+.ya{background:#FC3F1D;color:#fff;border:0;border-radius:16px;padding:14px;font:700 16px Manrope,sans-serif;cursor:pointer;max-width:520px;width:100%;margin-bottom:14px}
+.ya:focus-visible{outline:3px solid var(--cobalt);outline-offset:2px}
+.or{color:var(--muted);font-size:13px;margin:0 0 14px}
+@media(max-width:480px){.wd{display:none}.nd{display:inline}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+<a class="logo" href="#" aria-label="ingSell">
+<svg viewBox="0 0 40 40" aria-hidden="true"><rect x="7" y="7" width="26" height="26" rx="8" transform="rotate(45 20 20)" fill="#3A4BFF"/><circle cx="20" cy="14.5" r="2.7" fill="#FFC933"/><rect x="18.3" y="19" width="3.4" height="10" rx="1.7" fill="#fff"/></svg>
+<span>ing<b>Sell</b></span></a>
+<div class="hr"><button class="post"><span class="wd">Подать объявление</span><span class="nd">Продать</span></button><button class="av" id="me" aria-label="Профиль"></button></div>
+</header>
+
+<div id="home" hidden>
+<section class="hero">
+<h1>Продай лишнее, найди нужное</h1>
+<p>Машины, телефоны и всё остальное — от людей рядом с вами.</p>
+<div class="search"><input id="q" type="search" placeholder="Что ищете?" aria-label="Поиск"><button id="go">Найти</button></div>
+</section>
+
+<main class="board" aria-label="Категории">
+<button class="tile big" style="--c:#3A4BFF" data-c="Транспорт" data-v="transport"><svg viewBox="0 0 24 24"><path d="M3 15l1.6-5.2A2 2 0 0 1 6.5 8.4h11a2 2 0 0 1 1.9 1.4L21 15v3H3z"/><circle cx="7.5" cy="18" r="1.8"/><circle cx="16.5" cy="18" r="1.8"/></svg><div><h2>Транспорт</h2><span>Легковые, грузовые, мотоциклы, запчасти</span></div></button>
+<button class="tile" style="--c:#FFC933" data-c="Телефоны"><svg viewBox="0 0 24 24"><rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18.5h2"/></svg><div><h2>Телефоны</h2><span>Смартфоны, планшеты</span></div></button>
+<button class="tile" style="--c:#2DD4A0" data-c="Недвижимость"><svg viewBox="0 0 24 24"><path d="M3 11l9-7 9 7v9H3z"/><path d="M10 20v-6h4v6"/></svg><div><h2>Недвижимость</h2><span>Квартиры, дома</span></div></button>
+<button class="tile" style="--c:#FF7A66" data-c="Одежда"><svg viewBox="0 0 24 24"><path d="M8 3L3 7l3 3 2-1v12h8V9l2 1 3-3-5-4a4 4 0 0 1-8 0z"/></svg><div><h2>Одежда</h2><span>Обувь, аксессуары</span></div></button>
+<button class="tile light" style="--c:#14163B" data-c="Электроника"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="11" rx="1.5"/><path d="M2 19h20"/></svg><div><h2>Электроника</h2><span>Ноутбуки, ТВ, техника</span></div></button>
+<button class="tile" style="--c:#D9D6FF" data-c="Дом и сад"><svg viewBox="0 0 24 24"><path d="M4 11V8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3"/><path d="M3 11h18v6H3z"/><path d="M5 17v2M19 17v2"/></svg><div><h2>Дом и сад</h2><span>Мебель, инструменты</span></div></button>
+<button class="tile" style="--c:#BFE3FF" data-c="Игры"><svg viewBox="0 0 24 24"><rect x="2.5" y="7" width="19" height="10" rx="5"/><path d="M8 10v4M6 12h4"/><circle cx="15.5" cy="11" r=".6"/><circle cx="17.5" cy="13" r=".6"/></svg><div><h2>Игры</h2><span>Консоли, аккаунты</span></div></button>
+<button class="tile" style="--c:#FFC933" data-c="Услуги"><svg viewBox="0 0 24 24"><path d="M14 6a4 4 0 0 0 4 4l-8.5 8.5a2 2 0 0 1-3-3L15 7z"/></svg><div><h2>Услуги</h2><span>Ремонт, обучение</span></div></button>
+<button class="tile" style="--c:#2DD4A0" data-c="Работа"><svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5h6v2M3 13h18"/></svg><div><h2>Работа</h2><span>Вакансии, подработка</span></div></button>
+<button class="tile" style="--c:#FF7A66" data-c="Животные"><svg viewBox="0 0 24 24"><circle cx="6" cy="10" r="1.8"/><circle cx="10" cy="6" r="1.8"/><circle cx="14" cy="6" r="1.8"/><circle cx="18" cy="10" r="1.8"/><path d="M8 17c0-3 2-5 4-5s4 2 4 5c0 2-2 2-4 2s-4 0-4-2z"/></svg><div><h2>Животные</h2><span>Питомцы, корма</span></div></button>
+<button class="tile wide light" style="--c:#3A4BFF" data-c="Всё остальное"><svg viewBox="0 0 24 24"><circle cx="6" cy="6" r="1.6"/><circle cx="12" cy="6" r="1.6"/><circle cx="18" cy="6" r="1.6"/><circle cx="6" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="18" cy="12" r="1.6"/><circle cx="6" cy="18" r="1.6"/><circle cx="12" cy="18" r="1.6"/><circle cx="18" cy="18" r="1.6"/></svg><div><h2>Всё остальное</h2><span>Спорт, хобби, коллекции</span></div></button>
+</main>
+</div>
+<section id="transport" class="view" hidden>
+<button class="back" data-go="home">← Назад</button>
+<h1 class="vt">Транспорт</h1>
+<div class="bar"><select id="fc" aria-label="Город или село"></select><button class="post" data-go="form">Подать объявление</button></div>
+<div id="list"></div>
+</section>
+<section id="form" class="view" hidden>
+<button class="back" data-go="transport">← Назад</button>
+<h1 class="vt">Новое объявление</h1>
+<div class="fm">
+<div class="lbl">Фото, до 3 штук</div>
+<div class="pv" id="pv"></div>
+<div id="addl"><input id="f-f" type="file" accept="image/*" multiple></div>
+<label>Название<input id="f-t" maxlength="60" placeholder="Например, Лада Приора 2012"></label>
+<label>Цена, ₽<input id="f-p" inputmode="numeric" placeholder="350000"></label>
+<label>Город или село<select id="f-c"></select></label>
+<label>Номер телефона<input id="f-ph" type="tel" inputmode="tel" placeholder="+7 928 000-00-00"></label>
+<p class="hint">Телефон увидят все, кто откроет объявление.</p>
+<p id="err" class="err" role="alert"></p>
+<button class="submit" id="pub">Опубликовать</button>
+</div>
+</section>
+<section id="auth" class="view" hidden>
+<h1 class="vt">Добро пожаловать в ingSell</h1>
+<button class="ya" id="ya">Войти через Яндекс</button>
+<p class="or">или по нику и паролю</p>
+<div class="tabs" role="tablist"><button class="tab" id="t-reg" role="tab">Регистрация</button><button class="tab" id="t-in" role="tab">Вход</button></div>
+<div class="fm">
+<label id="l-nick">Ник<input id="a-nick" maxlength="20" autocomplete="nickname" placeholder="Например, auto_magas"></label>
+<label id="l-ph">Номер телефона<input id="a-ph" type="tel" inputmode="tel" autocomplete="tel" placeholder="+7 928 000-00-00"></label>
+<label>Пароль<input id="a-pw" type="password" autocomplete="new-password" placeholder="Не короче 6 символов"></label>
+<label id="l-pw2">Повторите пароль<input id="a-pw2" type="password" autocomplete="new-password"></label>
+<p class="hint" id="a-hint">Номер телефона пока не проверяется, SMS-код не приходит. Вход выполняется по нику и паролю.</p>
+<p id="a-err" class="err" role="alert"></p>
+<button class="submit" id="a-go">Создать профиль</button>
+</div>
+</section>
+<section id="profile" class="view" hidden>
+<button class="back" data-go="home">← Назад</button>
+<div class="pf"><div class="avl" id="pav"></div><div><h1 class="vt" id="pn"></h1><div class="ct" id="pid"></div></div></div>
+<div class="fm">
+<button class="del" id="cp">Скопировать ID</button>
+<label>Ник<input id="p-nk" maxlength="20" autocomplete="nickname"></label>
+<label>Телефон<input id="p-ph" type="tel" inputmode="tel" placeholder="+7 928 000-00-00"></label>
+<label>Город или село<select id="p-c"></select></label>
+<label>О себе<input id="p-ab" maxlength="120" placeholder="Коротко о себе"></label>
+<p class="ct" id="pcnt"></p>
+<button class="submit" id="psave">Сохранить</button>
+<button class="del" id="out">Выйти</button>
+<div class="lbl">Найти человека по ID</div>
+<input id="s-id" inputmode="numeric" maxlength="10" placeholder="Например, 1000001">
+<button class="submit" id="s-go">Найти</button>
+<div id="s-res"></div>
+</div>
+</section>
+</div>
+<div id="toast" role="status"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+if(!window.supabase){document.body.textContent='Не загрузился модуль Supabase. Проверьте интернет и обновите страницу.';throw new Error('no supabase')}
+var URL_='https://shxnijpbeucmkawvkqyc.supabase.co',KEY_='sb_publishable_pd007lbPDn9E9TBwc2oTxw_9y8G2xFp';
+var sb=supabase.createClient(URL_,KEY_);
+var tt=document.getElementById('toast'),tm,me=null,mode='reg',pics=[],busy=0;
+function show(m){tt.textContent=m;tt.classList.add('on');clearTimeout(tm);tm=setTimeout(function(){tt.classList.remove('on')},2600)}
+function $(i){return document.getElementById(i)}
+function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!==undefined)e.textContent=x;return e}
+var CITIES=['Магас','Назрань','Малгобек','Карабулак','Сунжа','Орджоникидзевская','Али-Юрт','Плиево','Экажево','Барсуки','Джейрах','Другой населённый пункт'];
+function fill(sel,first){sel.appendChild(new Option(first,''));CITIES.forEach(function(c){sel.appendChild(new Option(c,c))})}
+fill($('fc'),'Вся Ингушетия');fill($('f-c'),'Выберите город или село');fill($('p-c'),'Не указан');
+function ini(){return me?me.nick.charAt(0).toUpperCase():''}
+function hue(){return 'hsl('+(me.public_id%360)+',65%,40%)'}
+function paint(){var b=$('me');b.textContent=ini();b.style.background=me?hue():''}
+function go(v){if(!me)v='auth';['home','transport','form','auth','profile'].forEach(function(n){$(n).hidden=n!==v});document.querySelector('.hr').hidden=v==='auth';
+if(v==='transport')render();if(v==='profile')drawProfile();if(v==='form'&&me&&!$('f-ph').value)$('f-ph').value=me.phone||'';window.scrollTo(0,0)}
+async function render(){
+var L=$('list'),c=$('fc').value;L.textContent='';L.appendChild(el('p','ct','Загрузка…'));
+var q=sb.from('ads').select('id,title,price,city,phone,photos,owner,profiles(nick,public_id)').eq('category','transport').order('created_at',{ascending:false}).limit(100);
+if(c)q=q.eq('city',c);
+var res=await q;L.textContent='';
+if(res.error){var e=el('div','empty');e.appendChild(el('h2','','Не удалось загрузить'));e.appendChild(el('p','','Проверьте интернет и попробуйте ещё раз.'));var rb=el('button','post','Повторить');rb.onclick=render;e.appendChild(rb);L.appendChild(e);return}
+var a=res.data;
+if(!a.length){var d=el('div','empty');d.appendChild(el('h2','','Пока нет объявлений'));d.appendChild(el('p','',c?'В этом городе ещё ничего не продают.':'Здесь появятся машины, мотоциклы и запчасти.'));var b=el('button','post','Подать объявление');b.onclick=function(){go('form')};d.appendChild(b);L.appendChild(d);return}
+a.forEach(function(x){
+var k=el('article','ad');
+if(x.photos&&x.photos.length){var s=el('div','ph');x.photos.forEach(function(u){var im=el('img');im.src=u;im.alt=x.title;im.loading='lazy';s.appendChild(im)});k.appendChild(s)}
+k.appendChild(el('h2','',x.title));
+k.appendChild(el('div','pr',Number(x.price).toLocaleString('ru-RU')+' ₽'));
+k.appendChild(el('div','ct',x.city+' · '+x.phone));
+if(x.profiles)k.appendChild(el('div','ct','Продавец: '+x.profiles.nick+' · ID '+x.profiles.public_id));
+var r2=el('div','row'),a1=el('a','call','Позвонить');a1.href='tel:+7'+x.phone.replace(/\D/g,'').slice(-10);r2.appendChild(a1);
+if(me&&x.owner===me.id){var dl=el('button','del','Удалить');dl.onclick=async function(){dl.disabled=true;var dr=await sb.from('ads').delete().eq('id',x.id);if(dr.error){dl.disabled=false;show('Не удалось удалить');return}
+var ps=(x.photos||[]).map(function(u){return decodeURIComponent(u.split('/photos/')[1]||'')}).filter(Boolean);if(ps.length)sb.storage.from('photos').remove(ps);render()};r2.appendChild(dl)}
+k.appendChild(r2);L.appendChild(k)})}
+$('fc').onchange=render;
+function drawPv(){var v=$('pv');v.textContent='';pics.forEach(function(p,i){var d=el('div'),im=el('img');im.src=p.url;im.alt='Фото '+(i+1);var b=el('button','','×');b.setAttribute('aria-label','Убрать фото');b.onclick=function(){pics.splice(i,1);drawPv()};d.appendChild(im);d.appendChild(b);v.appendChild(d)});$('addl').style.display=pics.length>=3?'none':''}
+function shrink(f,cb){var rd=new FileReader();rd.onload=function(){var im=new Image();im.onload=function(){var s=Math.min(1,1000/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.round(im.width*s);c.height=Math.round(im.height*s);c.getContext('2d').drawImage(im,0,0,c.width,c.height);c.toBlob(function(b){cb(b)},'image/jpeg',.72)};im.onerror=function(){cb(null)};im.src=rd.result};rd.onerror=function(){cb(null)};rd.readAsDataURL(f)}
+$('f-f').onchange=function(){var fs=Array.prototype.slice.call(this.files).slice(0,3-pics.length);this.value='';fs.forEach(function(f){shrink(f,function(b){if(!b){show('Не удалось загрузить фото');return}if(pics.length<3){pics.push({blob:b,url:URL.createObjectURL(b)});drawPv()}})})};
+$('pub').onclick=async function(){
+if(busy)return;
+var ti=$('f-t').value.trim(),p=$('f-p').value.replace(/\s/g,''),c=$('f-c').value,ph=$('f-ph').value.trim(),n=ph.replace(/\D/g,''),m='';
+if(!ti)m='Введите название';
+else if(!/^\d{1,9}$/.test(p)||+p<1)m='Укажите цену цифрами, например 350000';
+else if(!c)m='Выберите город или село';
+else if(n.length<10||n.length>11)m='Введите номер телефона, например +7 928 000-00-00';
+$('err').textContent=m;if(m)return;
+busy=1;var bt=this;bt.disabled=true;bt.textContent='Публикуем…';
+try{
+var urls=[];
+for(var i=0;i<pics.length;i++){var path=me.id+'/'+Date.now()+'-'+i+'.jpg';var u=await sb.storage.from('photos').upload(path,pics[i].blob,{contentType:'image/jpeg'});if(u.error)throw u.error;urls.push(sb.storage.from('photos').getPublicUrl(path).data.publicUrl)}
+var ins=await sb.from('ads').insert({title:ti,price:Number(p),city:c,phone:ph,photos:urls,category:'transport'});if(ins.error)throw ins.error;
+pics=[];drawPv();$('f-t').value='';$('f-p').value='';$('f-c').value='';show('Объявление опубликовано');go('transport')
+}catch(e){$('err').textContent='Не удалось опубликовать: '+(e.message||'ошибка сети')}
+busy=0;bt.disabled=false;bt.textContent='Опубликовать'};
+async function em(n){var h=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(n.toLowerCase()));return Array.from(new Uint8Array(h)).slice(0,20).map(function(b){return ('0'+b.toString(16)).slice(-2)}).join('')+'@gmail.com'}
+async function loadMe(u){var r=await sb.from('profiles').select('id,public_id,nick,city,about,phone').eq('id',u.id).single();
+if(r.error){await sb.auth.signOut();me=null;throw r.error}
+me=r.data;me.phone=me.phone||(u.user_metadata&&u.user_metadata.phone)||''}
+function setMode(m){mode=m;$('t-reg').setAttribute('aria-selected',m==='reg');$('t-in').setAttribute('aria-selected',m==='in');
+$('l-ph').hidden=$('l-pw2').hidden=$('a-hint').hidden=m!=='reg';
+$('a-pw').autocomplete=m==='reg'?'new-password':'current-password';
+$('a-go').textContent=m==='reg'?'Создать профиль':'Войти';$('a-err').textContent=''}
+$('t-reg').onclick=function(){setMode('reg')};$('t-in').onclick=function(){setMode('in')};
+$('a-go').onclick=async function(){
+if(busy)return;
+var nk=$('a-nick').value.trim(),n=$('a-ph').value.replace(/\D/g,''),pw=$('a-pw').value,m='';
+if(!/^[\wа-яё.\-]{3,20}$/i.test(nk))m='Ник: от 3 до 20 символов, только буквы, цифры и знаки _ . -';
+else if(mode==='reg'&&(n.length<10||n.length>11))m='Введите номер телефона, например +7 928 000-00-00';
+else if(pw.length<6)m='Пароль не короче 6 символов';
+else if(mode==='reg'&&pw!==$('a-pw2').value)m='Пароли не совпадают';
+$('a-err').textContent=m;if(m)return;
+busy=1;var bt=this;bt.disabled=true;
+try{
+var mail=await em(nk),r;
+if(mode==='reg'){r=await sb.auth.signUp({email:mail,password:pw,options:{data:{nick:nk,phone:$('a-ph').value.trim()}}});
+if(r.error)throw r.error;
+if(!r.data.session)throw {message:'NOSESSION'}}
+else{r=await sb.auth.signInWithPassword({email:mail,password:pw});if(r.error)throw r.error}
+await loadMe(r.data.user);
+['a-nick','a-ph','a-pw','a-pw2'].forEach(function(i){$(i).value=''});paint();
+show(mode==='reg'?'Профиль создан. Ваш ID: '+me.public_id:'Добро пожаловать, '+me.nick);go('home')
+}catch(e){var s=e.message||'';
+$('a-err').textContent=/already registered/i.test(s)?'Такой ник уже занят':/invalid login/i.test(s)?'Неверный ник или пароль':s==='NOSESSION'?'В Supabase выключите Confirm email (Authentication → Sign In / Providers → Email)':'Ошибка: '+(s||'нет связи')}
+busy=0;bt.disabled=false};
+function drawProfile(){var a=$('pav');a.textContent=ini();a.style.background=hue();$('pn').textContent=me.nick;$('pid').textContent='ID '+me.public_id;
+$('p-nk').value=me.nick;$('p-ph').value=me.phone||'';$('p-c').value=me.city||'';$('p-ab').value=me.about||'';$('s-res').textContent='';
+sb.from('ads').select('id',{count:'exact',head:true}).eq('owner',me.id).then(function(r){$('pcnt').textContent='Ваших объявлений: '+(r.count||0)})}
+$('cp').onclick=function(){var id=String(me.public_id);try{navigator.clipboard.writeText(id).then(function(){show('ID скопирован')},function(){show('Ваш ID: '+id)})}catch(e){show('Ваш ID: '+id)}};
+$('psave').onclick=async function(){var nk=$('p-nk').value.trim(),c=$('p-c').value,a=$('p-ab').value.trim(),ph=$('p-ph').value.trim(),n=ph.replace(/\D/g,'');
+if(!/^[\wа-яё.\-]{3,20}$/i.test(nk)){show('Ник: от 3 до 20 символов, буквы, цифры, _ . -');return}
+if(ph&&(n.length<10||n.length>11)){show('Телефон, например +7 928 000-00-00');return}
+var r=await sb.from('profiles').update({nick:nk,phone:ph||null,city:c||null,about:a||null}).eq('id',me.id);
+if(r.error){show(/duplicate|unique/i.test(r.error.message||'')?'Такой ник уже занят':'Не удалось сохранить');return}
+me.nick=nk;me.phone=ph;me.city=c;me.about=a;paint();drawProfile();show('Профиль сохранён')};
+$('out').onclick=async function(){await sb.auth.signOut();me=null;paint();setMode('reg');go('auth')};
+$('s-go').onclick=async function(){var v=$('s-id').value.replace(/\D/g,''),R=$('s-res');R.textContent='';
+if(!v){R.appendChild(el('p','ct','Введите ID, например 1000001'));return}
+var r=await sb.from('profiles').select('public_id,nick,city,about').eq('public_id',v).maybeSingle();
+if(r.error){R.appendChild(el('p','ct','Не удалось выполнить поиск'));return}
+if(!r.data){R.appendChild(el('p','ct','Человека с таким ID нет'));return}
+var d=r.data,k=el('div','ad');k.appendChild(el('h2','',d.nick));k.appendChild(el('div','ct','ID '+d.public_id+(d.city?' · '+d.city:'')));if(d.about)k.appendChild(el('div','ct',d.about));R.appendChild(k)};
+$('ya').onclick=async function(){var r=await sb.auth.signInWithOAuth({provider:'custom:yandex',options:{redirectTo:location.origin+location.pathname}});if(r.error)$('a-err').textContent='Не удалось начать вход через Яндекс: '+(r.error.message||'ошибка')};
+$('me').onclick=function(){go('profile')};
+document.querySelectorAll('.tile').forEach(function(b){b.onclick=function(){if(b.dataset.v==='transport')go('transport');else show('Раздел «'+b.dataset.c+'» скоро откроется')}});
+document.querySelector('.post').onclick=function(){go('form')};
+document.querySelectorAll('[data-go]').forEach(function(b){b.onclick=function(){go(b.dataset.go)}});
+document.querySelector('.logo').onclick=function(e){e.preventDefault();go('home')};
+function s(){var v=$('q').value.trim();show(v?'Поиск «'+v+'» скоро заработает':'Введите, что ищете')}
+$('go').onclick=s;$('q').onkeydown=function(e){if(e.key==='Enter')s()};
+(async function(){
+var q=location.hash+'&'+location.search,em=/error_description=([^&]+)/.exec(q);
+try{var r=await sb.auth.getSession();if(r.data.session)await loadMe(r.data.session.user)}catch(e){me=null}
+paint();setMode('reg');
+if(me&&/^ya_/.test(me.nick)){go('profile');show('Выберите себе ник и сохраните')}else go('home');
+if(!me&&em){go('auth');$('a-err').textContent='Вход через Яндекс не удался: '+decodeURIComponent(em[1].replace(/\+/g,' '))}
+if(location.hash||location.search)history.replaceState(null,'',location.pathname)
+})();
+</script>
+</body>
+</html>
