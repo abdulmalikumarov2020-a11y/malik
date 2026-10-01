@@ -90,6 +90,19 @@ select:focus-visible,.back:focus-visible,.fm input:focus-visible,.submit:focus-v
 .ya{background:#FC3F1D;color:#fff;border:0;border-radius:16px;padding:14px;font:700 16px Manrope,sans-serif;cursor:pointer;max-width:520px;width:100%;margin-bottom:14px}
 .ya:focus-visible{outline:3px solid var(--cobalt);outline-offset:2px}
 .or{color:var(--muted);font-size:13px;margin:0 0 14px}
+.chb{background:var(--card);color:var(--text);padding:10px 14px}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:#FF7A66;margin-left:6px}.dot[hidden]{display:none}
+.msgs{display:flex;flex-direction:column;gap:8px;margin:12px 0;max-height:52vh;overflow-y:auto;padding:4px}
+.bub{max-width:80%;padding:10px 14px;border-radius:18px;background:var(--card);overflow-wrap:anywhere;white-space:pre-wrap}
+.bub.me{align-self:flex-end;background:var(--cobalt);color:#fff}
+.bub time{display:block;font-size:11px;opacity:.65;margin-top:2px}
+.send{display:flex;gap:8px;max-width:520px}
+.send input{flex:1;min-width:0;background:var(--card);color:var(--text);border:2px solid transparent;border-radius:14px;padding:12px 14px;font:500 16px Manrope,sans-serif}
+.send input:focus-visible{outline:3px solid var(--cobalt);outline-offset:2px}
+.send .submit{padding:0 16px}
+.cl{cursor:pointer;border:0;text-align:left;width:100%;font-family:inherit;color:var(--text)}
+.cl:focus-visible{outline:3px solid var(--cobalt);outline-offset:2px}
+.bd{display:inline-block;background:#FF7A66;color:#14163B;border-radius:99px;padding:1px 9px;font-size:12px;font-weight:700;margin-left:6px}
 @media(max-width:480px){.wd{display:none}.nd{display:inline}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
@@ -100,7 +113,7 @@ select:focus-visible,.back:focus-visible,.fm input:focus-visible,.submit:focus-v
 <a class="logo" href="#" aria-label="ingSell">
 <svg viewBox="0 0 40 40" aria-hidden="true"><rect x="7" y="7" width="26" height="26" rx="8" transform="rotate(45 20 20)" fill="#3A4BFF"/><circle cx="20" cy="14.5" r="2.7" fill="#FFC933"/><rect x="18.3" y="19" width="3.4" height="10" rx="1.7" fill="#fff"/></svg>
 <span>ing<b>Sell</b></span></a>
-<div class="hr"><button class="post"><span class="wd">Подать объявление</span><span class="nd">Продать</span></button><button class="av" id="me" aria-label="Профиль"></button></div>
+<div class="hr"><button class="post"><span class="wd">Подать объявление</span><span class="nd">Продать</span></button><button class="post chb" id="msgs">Чаты<span class="dot" id="dot" hidden></span></button><button class="av" id="me" aria-label="Профиль"></button></div>
 </header>
 
 <div id="home" hidden>
@@ -179,6 +192,19 @@ select:focus-visible,.back:focus-visible,.fm input:focus-visible,.submit:focus-v
 <div id="s-res"></div>
 </div>
 </section>
+<section id="chats" class="view" hidden>
+<button class="back" data-go="home">← Назад</button>
+<h1 class="vt">Сообщения</h1>
+<div id="ch-list"></div>
+</section>
+<section id="chat" class="view" hidden>
+<button class="back" data-go="chats">← К чатам</button>
+<h1 class="vt" id="ch-t" style="font-size:clamp(20px,5vw,28px)"></h1>
+<div class="ct" id="ch-w"></div>
+<p class="hint">Не переводите деньги вперёд незнакомым людям. Проверяйте товар лично.</p>
+<div class="msgs" id="ch-l" aria-live="polite"></div>
+<div class="send"><input id="ch-i" maxlength="1000" placeholder="Сообщение" aria-label="Сообщение"><button class="submit" id="ch-s">Отправить</button></div>
+</section>
 </div>
 <div id="toast" role="status"></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -196,8 +222,8 @@ fill($('fc'),'Вся Ингушетия');fill($('f-c'),'Выберите гор
 function ini(){return me?me.nick.charAt(0).toUpperCase():''}
 function hue(){return 'hsl('+(me.public_id%360)+',65%,40%)'}
 function paint(){var b=$('me');b.textContent=ini();b.style.background=me?hue():''}
-function go(v){if(!me)v='auth';['home','transport','form','auth','profile'].forEach(function(n){$(n).hidden=n!==v});document.querySelector('.hr').hidden=v==='auth';
-if(v==='transport')render();if(v==='profile')drawProfile();if(v==='form'&&me&&!$('f-ph').value)$('f-ph').value=me.phone||'';window.scrollTo(0,0)}
+function go(v){if(!me)v='auth';['home','transport','form','auth','profile','chats','chat'].forEach(function(n){$(n).hidden=n!==v});if(v!=='chat')stopChat();document.querySelector('.hr').hidden=v==='auth';
+if(v==='chats')loadChats();if(v==='transport')render();if(v==='profile')drawProfile();if(v==='form'&&me&&!$('f-ph').value)$('f-ph').value=me.phone||'';window.scrollTo(0,0);refreshDot()}
 async function render(){
 var L=$('list'),c=$('fc').value;L.textContent='';L.appendChild(el('p','ct','Загрузка…'));
 var q=sb.from('ads').select('id,title,price,city,phone,photos,owner,profiles(nick,public_id)').eq('category','transport').order('created_at',{ascending:false}).limit(100);
@@ -214,6 +240,7 @@ k.appendChild(el('div','pr',Number(x.price).toLocaleString('ru-RU')+' ₽'));
 k.appendChild(el('div','ct',x.city+' · '+x.phone));
 if(x.profiles)k.appendChild(el('div','ct','Продавец: '+x.profiles.nick+' · ID '+x.profiles.public_id));
 var r2=el('div','row'),a1=el('a','call','Позвонить');a1.href='tel:+7'+x.phone.replace(/\D/g,'').slice(-10);r2.appendChild(a1);
+if(me&&x.owner!==me.id){var wb=el('button','call','Написать');wb.style.cssText='border:0;cursor:pointer;background:var(--cobalt);color:#fff;font-family:inherit';wb.onclick=function(){startChat(x)};r2.appendChild(wb)}
 if(me&&x.owner===me.id){var dl=el('button','del','Удалить');dl.onclick=async function(){dl.disabled=true;var dr=await sb.from('ads').delete().eq('id',x.id);if(dr.error){dl.disabled=false;show('Не удалось удалить');return}
 var ps=(x.photos||[]).map(function(u){return decodeURIComponent(u.split('/photos/')[1]||'')}).filter(Boolean);if(ps.length)sb.storage.from('photos').remove(ps);render()};r2.appendChild(dl)}
 k.appendChild(r2);L.appendChild(k)})}
@@ -283,6 +310,60 @@ var r=await sb.from('profiles').select('public_id,nick,city,about').eq('public_i
 if(r.error){R.appendChild(el('p','ct','Не удалось выполнить поиск'));return}
 if(!r.data){R.appendChild(el('p','ct','Человека с таким ID нет'));return}
 var d=r.data,k=el('div','ad');k.appendChild(el('h2','',d.nick));k.appendChild(el('div','ct','ID '+d.public_id+(d.city?' · '+d.city:'')));if(d.about)k.appendChild(el('div','ct',d.about));R.appendChild(k)};
+
+var cur=null,cp=null,chn=null;
+function stopChat(){if(cp){clearInterval(cp);cp=null}if(chn){try{sb.removeChannel(chn)}catch(e){}chn=null}cur=null}
+async function refreshDot(){if(!me)return;try{var r=await sb.from('messages').select('id',{count:'exact',head:true}).is('read_at',null).neq('sender',me.id);$('dot').hidden=!(r.count>0)}catch(e){}}
+async function startChat(x){
+if(!me){go('auth');return}
+var q=await sb.from('conversations').select('id').eq('ad_id',x.id).eq('buyer',me.id).maybeSingle();
+if(q.error){show('Не удалось открыть чат');return}
+var id=q.data&&q.data.id;
+if(!id){var ins=await sb.from('conversations').insert({ad_id:x.id,buyer:me.id,seller:x.owner}).select('id').single();
+if(ins.error){show('Не удалось начать чат');return}id=ins.data.id}
+openChat(id,x.title,x.profiles?x.profiles.nick:'Продавец')}
+function openChat(id,title,who){
+go('chat');cur={id:id,last:0,n:-1};
+$('ch-t').textContent=title;$('ch-w').textContent='Собеседник: '+who;$('ch-l').textContent='';$('ch-i').value='';
+loadThread();
+cp=setInterval(loadThread,6000);
+try{chn=sb.channel('conv'+id).on('postgres_changes',{event:'INSERT',schema:'public',table:'messages',filter:'conversation_id=eq.'+id},function(){loadThread()}).subscribe()}catch(e){}}
+async function loadThread(){
+if(!cur||!me)return;var c=cur;
+var r=await sb.from('messages').select('id,sender,body,created_at').eq('conversation_id',c.id).order('created_at',{ascending:true}).limit(300);
+if(cur!==c||r.error)return;
+var a=r.data,last=a.length?a[a.length-1].id:0;
+if(a.length===c.n&&last===c.last)return;
+c.n=a.length;c.last=last;
+var L=$('ch-l'),near=L.scrollHeight-L.scrollTop-L.clientHeight<80||!L.childNodes.length;
+L.textContent='';
+if(!a.length)L.appendChild(el('p','ct','Напишите первое сообщение'));
+a.forEach(function(m){var b=el('div','bub'+(m.sender===me.id?' me':''),m.body);b.appendChild(el('time','',new Date(m.created_at).toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})));L.appendChild(b)});
+if(near)L.scrollTop=L.scrollHeight;
+sb.from('messages').update({read_at:new Date().toISOString()}).eq('conversation_id',c.id).neq('sender',me.id).is('read_at',null).then(function(){refreshDot()})}
+async function sendMsg(){
+if(!cur||busy)return;var t=$('ch-i').value.trim();if(!t)return;
+busy=1;var bt=$('ch-s');bt.disabled=true;
+var r=await sb.from('messages').insert({conversation_id:cur.id,body:t});
+busy=0;bt.disabled=false;
+if(r.error){show(r.error.message||'Не удалось отправить');return}
+$('ch-i').value='';if(cur)cur.n=-1;loadThread()}
+$('ch-s').onclick=sendMsg;$('ch-i').onkeydown=function(e){if(e.key==='Enter'){e.preventDefault();sendMsg()}};
+async function loadChats(){
+var L=$('ch-list');L.textContent='';L.appendChild(el('p','ct','Загрузка…'));
+var r=await sb.from('conversations').select('id,buyer,seller,last_at,ads(title),b:profiles!conversations_buyer_fkey(nick),s:profiles!conversations_seller_fkey(nick)').order('last_at',{ascending:false}).limit(100);
+var u=await sb.from('messages').select('conversation_id').is('read_at',null).neq('sender',me.id).limit(500);
+L.textContent='';
+if(r.error){L.appendChild(el('p','ct','Не удалось загрузить чаты'));return}
+if(!r.data.length){var e=el('div','empty');e.appendChild(el('h2','','Пока нет переписок'));e.appendChild(el('p','','Нажмите «Написать» под объявлением, чтобы связаться с продавцом.'));L.appendChild(e);return}
+var cnt={};((u.data)||[]).forEach(function(m){cnt[m.conversation_id]=(cnt[m.conversation_id]||0)+1});
+r.data.forEach(function(c){
+var mine=c.buyer===me.id,who=(mine?c.s:c.b),nick=who?who.nick:'Пользователь',title=c.ads?c.ads.title:'Объявление';
+var k=el('button','ad cl');var h=el('h2','',title);if(cnt[c.id])h.appendChild(el('span','bd',String(cnt[c.id])));
+k.appendChild(h);k.appendChild(el('div','ct',(mine?'Продавец: ':'Покупатель: ')+nick));
+k.onclick=function(){openChat(c.id,title,nick)};L.appendChild(k)})}
+$('msgs').onclick=function(){go('chats')};
+setInterval(refreshDot,30000);
 $('ya').onclick=async function(){var r=await sb.auth.signInWithOAuth({provider:'custom:yandex',options:{redirectTo:location.origin+location.pathname}});if(r.error)$('a-err').textContent='Не удалось начать вход через Яндекс: '+(r.error.message||'ошибка')};
 $('me').onclick=function(){go('profile')};
 document.querySelectorAll('.tile').forEach(function(b){b.onclick=function(){if(b.dataset.v==='transport')go('transport');else show('Раздел «'+b.dataset.c+'» скоро откроется')}});
